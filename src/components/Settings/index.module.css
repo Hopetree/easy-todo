@@ -184,18 +184,8 @@
 }
 
 .select {
-  padding: 6px 10px;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  font-size: 13px;
-  background: #fff;
-  outline: none;
-  cursor: pointer;
-  color: #334155;
   flex-shrink: 0;
-}
-.select:focus {
-  border-color: #3b82f6;
+  min-width: 100px;
 }
 
 /* ---- toggle switch ---- */

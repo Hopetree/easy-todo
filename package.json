@@ -1,6 +1,6 @@
 {
   "name": "easy-todo",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "浏览器插件 TODO 管理器",
   "scripts": {
     "dev": "wxt",

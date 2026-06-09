@@ -252,15 +252,8 @@
 .editFields select,
 .editFields input {
   font-size: 12px;
-  padding: 2px 6px;
-  border: 1px solid #e2e8f0;
+  padding: 2px 24px 2px 6px;
   border-radius: 4px;
-  outline: none;
-  background: #fff;
-}
-.editFields select:focus,
-.editFields input:focus {
-  border-color: #3b82f6;
 }
 
 .editNoteArea {

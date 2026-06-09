@@ -42,15 +42,7 @@
 
 .select {
   flex: 1;
-  padding: 4px 4px;
-  border: 1px solid #e2e8f0;
-  border-radius: 4px;
   font-size: 12px;
-  background: #fff;
-  outline: none;
-  color: #475569;
-  cursor: pointer;
-}
-.select:focus {
-  border-color: #3b82f6;
+  padding: 4px 24px 4px 6px;
+  border-radius: 4px;
 }
