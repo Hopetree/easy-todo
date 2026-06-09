@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { TodoTask } from '@/types';
+import { CustomSelect } from '@/components/CustomSelect';
 import styles from './index.module.css';
 
 interface Props {
@@ -77,14 +78,15 @@ export function TaskItem({ task, listColor, defaultExpanded = false, confirmDele
           autoFocus
         />
         <div className={styles.editFields}>
-          <select
+          <CustomSelect
             value={editPriority}
-            onChange={(e) => setEditPriority(e.target.value as TodoTask['priority'])}
-          >
-            <option value="high">🔴 高</option>
-            <option value="medium">🟡 中</option>
-            <option value="low">🟢 低</option>
-          </select>
+            options={[
+              { value: 'high', label: '🔴 高' },
+              { value: 'medium', label: '🟡 中' },
+              { value: 'low', label: '🟢 低' },
+            ]}
+            onChange={(v) => setEditPriority(v as TodoTask['priority'])}
+          />
           <input
             type="date"
             value={editDueDate}

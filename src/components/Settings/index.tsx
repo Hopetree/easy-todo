@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { AppData, AppSettings, ImportMode } from '@/types';
 import { DEFAULT_SETTINGS } from '@/types';
 import { ImportExport } from '@/components/ImportExport';
+import { CustomSelect } from '@/components/CustomSelect';
 import { version } from '@/../package.json';
 import styles from './index.module.css';
 
@@ -117,19 +118,20 @@ export function Settings({
                 <span className={styles.labelText}>默认优先级</span>
                 <span className={styles.labelHint}>新建任务时的初始优先级</span>
               </div>
-              <select
+              <CustomSelect
                 className={styles.select}
                 value={s.defaultPriority}
-                onChange={(e) =>
+                options={[
+                  { value: 'high', label: '高' },
+                  { value: 'medium', label: '中' },
+                  { value: 'low', label: '低' },
+                ]}
+                onChange={(v) =>
                   onUpdateSettings({
-                    defaultPriority: e.target.value as AppSettings['defaultPriority'],
+                    defaultPriority: v as AppSettings['defaultPriority'],
                   })
                 }
-              >
-                <option value="high">高</option>
-                <option value="medium">中</option>
-                <option value="low">低</option>
-              </select>
+              />
             </div>
 
             <div className={styles.row}>
@@ -137,19 +139,20 @@ export function Settings({
                 <span className={styles.labelText}>默认筛选视图</span>
                 <span className={styles.labelHint}>打开插件时默认显示的任务范围</span>
               </div>
-              <select
+              <CustomSelect
                 className={styles.select}
                 value={s.defaultFilter}
-                onChange={(e) =>
+                options={[
+                  { value: 'all', label: '全部' },
+                  { value: 'todo', label: '未完成' },
+                  { value: 'done', label: '已完成' },
+                ]}
+                onChange={(v) =>
                   onUpdateSettings({
-                    defaultFilter: e.target.value as AppSettings['defaultFilter'],
+                    defaultFilter: v as AppSettings['defaultFilter'],
                   })
                 }
-              >
-                <option value="all">全部</option>
-                <option value="todo">未完成</option>
-                <option value="done">已完成</option>
-              </select>
+              />
             </div>
           </div>
         </section>

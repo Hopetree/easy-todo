@@ -1,5 +1,23 @@
 import type { FilterOptions, TodoTask } from '@/types';
+import { CustomSelect } from '@/components/CustomSelect';
 import styles from './index.module.css';
+
+const PRIORITY_OPTIONS = [
+  { value: '', label: '全部优先级' },
+  { value: 'high', label: '高优先级' },
+  { value: 'medium', label: '中优先级' },
+  { value: 'low', label: '低优先级' },
+];
+const COMPLETED_OPTIONS = [
+  { value: '', label: '全部状态' },
+  { value: 'no', label: '未完成' },
+  { value: 'yes', label: '已完成' },
+];
+const ARCHIVED_OPTIONS = [
+  { value: 'no', label: '未归档' },
+  { value: 'yes', label: '已归档' },
+  { value: '', label: '全部（含归档）' },
+];
 
 interface Props {
   filter: FilterOptions;
@@ -41,50 +59,34 @@ export function SearchFilter({ filter, allTags, onChange }: Props) {
       </div>
 
       <div className={styles.filters}>
-        <select
+        <CustomSelect
           className={styles.select}
           value={filter.priority}
-          onChange={(e) => update({ priority: e.target.value as '' | TodoTask['priority'] })}
-        >
-          <option value="">全部优先级</option>
-          <option value="high">高优先级</option>
-          <option value="medium">中优先级</option>
-          <option value="low">低优先级</option>
-        </select>
-
-        <select
+          options={PRIORITY_OPTIONS}
+          onChange={(v) => update({ priority: v as '' | TodoTask['priority'] })}
+        />
+        <CustomSelect
           className={styles.select}
           value={filter.completed}
-          onChange={(e) => update({ completed: e.target.value as '' | 'yes' | 'no' })}
-        >
-          <option value="">全部状态</option>
-          <option value="no">未完成</option>
-          <option value="yes">已完成</option>
-        </select>
-
-        <select
+          options={COMPLETED_OPTIONS}
+          onChange={(v) => update({ completed: v as '' | 'yes' | 'no' })}
+        />
+        <CustomSelect
           className={styles.select}
           value={filter.archived}
-          onChange={(e) => update({ archived: e.target.value as '' | 'yes' | 'no' })}
-        >
-          <option value="no">未归档</option>
-          <option value="yes">已归档</option>
-          <option value="">全部（含归档）</option>
-        </select>
-
+          options={ARCHIVED_OPTIONS}
+          onChange={(v) => update({ archived: v as '' | 'yes' | 'no' })}
+        />
         {allTags.length > 0 && (
-          <select
+          <CustomSelect
             className={styles.select}
             value={filter.tag}
-            onChange={(e) => update({ tag: e.target.value })}
-          >
-            <option value="">全部标签</option>
-            {allTags.map((tag) => (
-              <option key={tag} value={tag}>
-                {tag}
-              </option>
-            ))}
-          </select>
+            options={[
+              { value: '', label: '全部标签' },
+              ...allTags.map((t) => ({ value: t, label: t })),
+            ]}
+            onChange={(v) => update({ tag: v })}
+          />
         )}
       </div>
     </div>
