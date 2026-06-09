@@ -31,7 +31,48 @@ export function generateWeeklyText(data: AppData): string {
 }
 
 // ============================================================
-// 导出
+// CSV 导出
+// ============================================================
+export function exportCSV(data: AppData): void {
+  const listMap = new Map(data.lists.map((l) => [l.id, l.name]));
+  const header = ['标题', '列表', '优先级', '完成', '进度', '截止日期', '标签', '备注', '已归档'];
+  const priorityLabel: Record<string, string> = { high: '高', medium: '中', low: '低' };
+
+  const rows = data.tasks.map((t) => [
+    escapeCSV(t.title),
+    escapeCSV(listMap.get(t.listId) ?? ''),
+    priorityLabel[t.priority] ?? t.priority,
+    t.completed ? '是' : '否',
+    `${t.progress}%`,
+    t.dueDate ?? '',
+    escapeCSV(t.tags.join('、')),
+    escapeCSV(t.note),
+    t.archived ? '是' : '否',
+  ]);
+
+  const csv = [header.join(','), ...rows.map((r) => r.join(','))].join('\n');
+  const bom = '﻿';
+  const blob = new Blob([bom + csv], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `easy-todo-${dateStr}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function escapeCSV(val: string): string {
+  if (val.includes(',') || val.includes('"') || val.includes('\n')) {
+    return `"${val.replace(/"/g, '""')}"`;
+  }
+  return val;
+}
+
+// ============================================================
+// 导出 JSON
 // ============================================================
 export function exportData(data: AppData): void {
   const payload: AppData = {

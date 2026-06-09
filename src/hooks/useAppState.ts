@@ -15,7 +15,7 @@ import {
   reorderLists,
   reorderTasks,
 } from '@/services/storage';
-import { applyImport, generateWeeklyText, exportData } from '@/services/importExport';
+import { applyImport, generateWeeklyText, exportData, exportCSV } from '@/services/importExport';
 
 export function useAppState() {
   const [data, setData] = useState<AppData>(() => loadData());
@@ -110,6 +110,11 @@ export function useAppState() {
     return generateWeeklyText(data);
   }, [data]);
 
+  const handleExportCSV = useCallback(() => {
+    saveDataImmediate(data);
+    exportCSV(data);
+  }, [data]);
+
   const handleImport = useCallback(
     (incoming: AppData, mode: ImportMode) => {
       setData((prev) => {
@@ -191,6 +196,7 @@ export function useAppState() {
     handleToggleTask,
     handleExport,
     handleGenerateWeekly,
+    handleExportCSV,
     handleImport,
     handleUpdateSettings,
     filteredTasks,

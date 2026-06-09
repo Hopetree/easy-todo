@@ -7,10 +7,11 @@ interface Props {
   data: AppData;
   onExport: () => void;
   onImport: (data: AppData, mode: ImportMode) => void;
+  onExportCSV?: () => void;
   variant?: 'compact' | 'full';
 }
 
-export function ImportExport({ data, onExport, onImport, variant = 'compact' }: Props) {
+export function ImportExport({ data, onExport, onImport, onExportCSV, variant = 'compact' }: Props) {
   const fileRef = useRef<HTMLInputElement>(null);
   const [importError, setImportError] = useState<string | null>(null);
   const [importData, setImportData] = useState<AppData | null>(null);
@@ -59,6 +60,12 @@ export function ImportExport({ data, onExport, onImport, variant = 'compact' }: 
       >
         ⤒ 从文件导入
       </button>
+
+      {isFull && onExportCSV && (
+        <button className={styles.fullBtn} onClick={onExportCSV}>
+          📊 导出 CSV
+        </button>
+      )}
       <input
         ref={fileRef}
         type="file"

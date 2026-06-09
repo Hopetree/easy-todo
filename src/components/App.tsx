@@ -21,6 +21,7 @@ export function App() {
           onUpdateSettings={state.handleUpdateSettings}
           onExport={state.handleExport}
           onGenerateWeekly={state.handleGenerateWeekly}
+          onExportCSV={state.handleExportCSV}
           onImport={state.handleImport}
           onBack={() => setView('main')}
         />

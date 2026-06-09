@@ -10,6 +10,7 @@ interface Props {
   onUpdateSettings: (patch: Partial<AppSettings>) => void;
   onExport: () => void;
   onGenerateWeekly: () => string;
+  onExportCSV: () => void;
   onImport: (data: AppData, mode: ImportMode) => void;
   onBack: () => void;
 }
@@ -20,6 +21,7 @@ export function Settings({
   onUpdateSettings,
   onExport,
   onGenerateWeekly,
+  onExportCSV,
   onImport,
   onBack,
 }: Props) {
@@ -46,6 +48,8 @@ export function Settings({
               data={data}
               onExport={onExport}
               onImport={onImport}
+              onExportCSV={onExportCSV}
+              variant="full"
             />
             <button
               className={styles.weeklyBtn}
