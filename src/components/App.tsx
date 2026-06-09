@@ -63,16 +63,18 @@ export function App() {
             onChange={state.setFilter}
           />
           <TaskEditor onAdd={(title) => state.handleAddTask(state.activeListId, title)} />
-          <TaskList
-            tasks={state.filteredTasks()}
-            lists={state.data.lists}
-            defaultExpanded={state.data.settings?.taskDefaultExpanded}
-            confirmDelete={state.data.settings?.confirmBeforeDelete}
-            onToggle={state.handleToggleTask}
-            onDelete={state.handleDeleteTask}
-            onUpdate={state.handleUpdateTask}
-            onReorder={(ids) => state.handleReorderTasks(state.activeListId, ids)}
-          />
+          <div className={styles.taskListWrapper}>
+            <TaskList
+              tasks={state.filteredTasks()}
+              lists={state.data.lists}
+              defaultExpanded={state.data.settings?.taskDefaultExpanded}
+              confirmDelete={state.data.settings?.confirmBeforeDelete}
+              onToggle={state.handleToggleTask}
+              onDelete={state.handleDeleteTask}
+              onUpdate={state.handleUpdateTask}
+              onReorder={(ids) => state.handleReorderTasks(state.activeListId, ids)}
+            />
+          </div>
         </main>
       </div>
     </div>
