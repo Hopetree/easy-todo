@@ -1,4 +1,5 @@
 import type { AppData, TodoList, TodoTask } from '@/types';
+import { DEFAULT_SETTINGS } from '@/types';
 
 const STORAGE_KEY = 'easy-todo-data';
 const CURRENT_VERSION = 1;
@@ -16,6 +17,7 @@ function getDefaultData(): AppData {
       },
     ],
     tasks: [],
+    settings: { ...DEFAULT_SETTINGS },
     version: CURRENT_VERSION,
   };
 }
@@ -53,7 +55,10 @@ function migrateFrom0(data: Partial<AppData>): AppData {
       priority: t.priority ?? ('medium' as const),
       tags: t.tags ?? [],
       note: t.note ?? '',
+      progress: t.progress ?? (t.completed ? 100 : 0),
+      archived: t.archived ?? false,
     })),
+    settings: data.settings ?? { ...DEFAULT_SETTINGS },
     version: CURRENT_VERSION,
   };
 }
@@ -100,17 +105,19 @@ export function addList(data: AppData, name: string, color: string): { data: App
   };
 }
 
-export function addTask(data: AppData, listId: string, title: string): { data: AppData; task: TodoTask } {
+export function addTask(data: AppData, listId: string, title: string, priority?: TodoTask['priority']): { data: AppData; task: TodoTask } {
   const now = new Date().toISOString();
   const task: TodoTask = {
     id: generateId(),
     listId,
     title,
     completed: false,
-    priority: 'medium',
-    dueDate: null,
+    priority: priority ?? 'medium',
+    dueDate: new Date().toISOString().slice(0, 10),
     tags: [],
     note: '',
+    progress: 0,
+    archived: false,
     createdAt: now,
     updatedAt: now,
   };
@@ -139,9 +146,16 @@ export function deleteTask(data: AppData, taskId: string): AppData {
 export function toggleTask(data: AppData, taskId: string): AppData {
   return {
     ...data,
-    tasks: data.tasks.map((t) =>
-      t.id === taskId ? { ...t, completed: !t.completed, updatedAt: new Date().toISOString() } : t,
-    ),
+    tasks: data.tasks.map((t) => {
+      if (t.id !== taskId) return t;
+      const completed = !t.completed;
+      return {
+        ...t,
+        completed,
+        progress: completed ? 100 : 0,
+        updatedAt: new Date().toISOString(),
+      };
+    }),
   };
 }
 

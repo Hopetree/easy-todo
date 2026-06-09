@@ -3,6 +3,34 @@ import type { AppData, ImportMode } from '@/types';
 const FILE_PREFIX = 'easy-todo-backup';
 
 // ============================================================
+// 周报生成
+// ============================================================
+export function generateWeeklyText(data: AppData): string {
+  const lines: string[] = [];
+  lines.push('本周工作：');
+
+  // 只显示有任务的列表
+  let listIndex = 0;
+  data.lists.forEach((list) => {
+    const listTasks = data.tasks.filter((t) => t.listId === list.id && !t.archived);
+    if (listTasks.length === 0) return;
+
+    listIndex++;
+    lines.push(`${listIndex}、${list.name}`);
+
+    listTasks.forEach((task, i) => {
+      lines.push(`${i + 1}）${task.title} (${task.progress}%)`);
+    });
+  });
+
+  if (listIndex === 0) {
+    lines.push('（暂无任务）');
+  }
+
+  return lines.join('\n');
+}
+
+// ============================================================
 // 导出
 // ============================================================
 export function exportData(data: AppData): void {

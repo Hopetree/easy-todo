@@ -1,23 +1,44 @@
+import { useState } from 'react';
+import type { AppView } from '@/types';
 import { useAppState } from '@/hooks/useAppState';
 import { ListManager } from './ListManager';
 import { TaskList } from './TaskList';
 import { TaskEditor } from './TaskEditor';
 import { SearchFilter } from './SearchFilter';
-import { ImportExport } from './ImportExport';
+import { Settings } from './Settings';
 import styles from './App.module.css';
 
 export function App() {
   const state = useAppState();
+  const [view, setView] = useState<AppView>('main');
+
+  if (view === 'settings') {
+    return (
+      <div className={styles.app}>
+        <Settings
+          settings={state.data.settings}
+          data={state.data}
+          onUpdateSettings={state.handleUpdateSettings}
+          onExport={state.handleExport}
+          onGenerateWeekly={state.handleGenerateWeekly}
+          onImport={state.handleImport}
+          onBack={() => setView('main')}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className={styles.app}>
       <header className={styles.header}>
         <h1 className={styles.title}>Easy Todo</h1>
-        <ImportExport
-          data={state.data}
-          onExport={state.handleExport}
-          onImport={state.handleImport}
-        />
+        <button
+          className={styles.settingsBtn}
+          onClick={() => setView('settings')}
+          title="设置"
+        >
+          ⚙
+        </button>
       </header>
 
       <div className={styles.body}>
@@ -30,6 +51,7 @@ export function App() {
             onAdd={state.handleAddList}
             onDelete={state.handleDeleteList}
             onRename={state.handleRenameList}
+            confirmDelete={state.data.settings?.confirmBeforeDelete}
           />
         </aside>
 
@@ -43,6 +65,8 @@ export function App() {
           <TaskList
             tasks={state.filteredTasks()}
             lists={state.data.lists}
+            defaultExpanded={state.data.settings?.taskDefaultExpanded}
+            confirmDelete={state.data.settings?.confirmBeforeDelete}
             onToggle={state.handleToggleTask}
             onDelete={state.handleDeleteTask}
             onUpdate={state.handleUpdateTask}

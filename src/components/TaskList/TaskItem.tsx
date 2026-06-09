@@ -5,6 +5,8 @@ import styles from './index.module.css';
 interface Props {
   task: TodoTask;
   listColor?: string;
+  defaultExpanded?: boolean;
+  confirmDelete?: boolean;
   onToggle: (id: string) => void;
   onDelete: (id: string) => void;
   onUpdate: (id: string, patch: Partial<TodoTask>) => void;
@@ -16,14 +18,16 @@ const PRIORITY_LABELS: Record<string, string> = {
   low: '低',
 };
 
-export function TaskItem({ task, listColor, onToggle, onDelete, onUpdate }: Props) {
+export function TaskItem({ task, listColor, defaultExpanded = false, confirmDelete = true, onToggle, onDelete, onUpdate }: Props) {
   const [editing, setEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(task.title);
   const [editNote, setEditNote] = useState(task.note);
   const [editPriority, setEditPriority] = useState(task.priority);
   const [editDueDate, setEditDueDate] = useState(task.dueDate ?? '');
   const [editTags, setEditTags] = useState(task.tags.join(', '));
-  const [expanded, setExpanded] = useState(false);
+  const [editProgress, setEditProgress] = useState(task.progress);
+  const [editArchived, setEditArchived] = useState(task.archived);
+  const [expanded, setExpanded] = useState(defaultExpanded);
 
   const saveEdit = () => {
     const title = editTitle.trim();
@@ -37,6 +41,8 @@ export function TaskItem({ task, listColor, onToggle, onDelete, onUpdate }: Prop
         .split(',')
         .map((t) => t.trim())
         .filter(Boolean),
+      progress: editProgress,
+      archived: editArchived,
     });
     setEditing(false);
   };
@@ -49,6 +55,8 @@ export function TaskItem({ task, listColor, onToggle, onDelete, onUpdate }: Prop
       setEditPriority(task.priority);
       setEditDueDate(task.dueDate ?? '');
       setEditTags(task.tags.join(', '));
+      setEditProgress(task.progress);
+      setEditArchived(task.archived);
       setEditing(false);
     }
   };
@@ -85,6 +93,28 @@ export function TaskItem({ task, listColor, onToggle, onDelete, onUpdate }: Prop
             onChange={(e) => setEditTags(e.target.value)}
           />
         </div>
+        <div className={styles.editProgressRow}>
+          <span className={styles.editProgressLabel}>
+            进度 {editProgress}%
+          </span>
+          <input
+            type="range"
+            min={0}
+            max={100}
+            step={5}
+            value={editProgress}
+            onChange={(e) => setEditProgress(Number(e.target.value))}
+            className={styles.editProgressSlider}
+          />
+        </div>
+        <label className={styles.editArchiveLabel}>
+          <input
+            type="checkbox"
+            checked={editArchived}
+            onChange={(e) => setEditArchived(e.target.checked)}
+          />
+          已归档（不显示在周报中）
+        </label>
         <textarea
           className={styles.editNoteArea}
           placeholder="备注..."
@@ -138,6 +168,9 @@ export function TaskItem({ task, listColor, onToggle, onDelete, onUpdate }: Prop
                 {tag}
               </span>
             ))}
+            {task.archived && (
+              <span className={styles.archivedTag}>已归档</span>
+            )}
           </div>
         </div>
 
@@ -150,6 +183,8 @@ export function TaskItem({ task, listColor, onToggle, onDelete, onUpdate }: Prop
             setEditPriority(task.priority);
             setEditDueDate(task.dueDate ?? '');
             setEditTags(task.tags.join(', '));
+            setEditProgress(task.progress);
+            setEditArchived(task.archived);
             setEditing(true);
           }}
         >
@@ -158,11 +193,23 @@ export function TaskItem({ task, listColor, onToggle, onDelete, onUpdate }: Prop
         <button
           className={styles.deleteBtn}
           title="删除"
-          onClick={() => onDelete(task.id)}
+          onClick={() => {
+            if (confirmDelete && !confirm('确定删除此任务？')) return;
+            onDelete(task.id);
+          }}
         >
           ×
         </button>
       </div>
+
+      {/* 进度条 */}
+      <div className={styles.progressBar}>
+        <div
+          className={styles.progressFill}
+          style={{ width: `${task.progress}%` }}
+        />
+      </div>
+      <span className={styles.progressText}>{task.progress}%</span>
 
       {expanded && task.note && (
         <div className={styles.note}>{task.note}</div>

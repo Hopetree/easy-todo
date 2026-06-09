@@ -104,22 +104,27 @@
 }
 
 .addForm {
-  display: flex;
   padding: 6px;
-  gap: 4px;
   border-top: 1px solid #e2e8f0;
 }
 
 .addInput {
-  flex: 1;
+  width: 100%;
   border: 1px solid #e2e8f0;
   border-radius: 4px;
-  padding: 4px 8px;
-  font-size: 13px;
+  padding: 4px 6px;
+  font-size: 12px;
   outline: none;
+  margin-bottom: 4px;
 }
 .addInput:focus {
   border-color: #3b82f6;
+}
+
+.addActions {
+  display: flex;
+  gap: 4px;
+  justify-content: flex-end;
 }
 
 .confirmBtn,
@@ -127,8 +132,8 @@
   border: none;
   background: none;
   cursor: pointer;
-  font-size: 14px;
-  padding: 4px 6px;
+  font-size: 13px;
+  padding: 2px 8px;
   border-radius: 4px;
 }
 

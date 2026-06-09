@@ -8,6 +8,8 @@ export interface TodoTask {
   dueDate: string | null;
   tags: string[];
   note: string;
+  progress: number;          // 0-100
+  archived: boolean;         // 已归档
   createdAt: string;
   updatedAt: string;
 }
@@ -21,13 +23,32 @@ export interface TodoList {
   sortOrder: number;
 }
 
+// 应用设置
+export interface AppSettings {
+  taskDefaultExpanded: boolean;   // 任务默认展开详情
+  defaultPriority: TodoTask['priority'];
+  defaultFilter: '' | 'all' | 'todo' | 'done';  // 默认筛选状态
+  confirmBeforeDelete: boolean;   // 删除前确认
+}
+
+export const DEFAULT_SETTINGS: AppSettings = {
+  taskDefaultExpanded: false,
+  defaultPriority: 'medium',
+  defaultFilter: 'all',
+  confirmBeforeDelete: true,
+};
+
 // 应用全局数据
 export interface AppData {
   lists: TodoList[];
   tasks: TodoTask[];
+  settings: AppSettings;
   version: number;
   exportedAt?: string;
 }
+
+// 应用视图
+export type AppView = 'main' | 'settings';
 
 // 筛选条件
 export interface FilterOptions {
@@ -35,6 +56,7 @@ export interface FilterOptions {
   priority: '' | TodoTask['priority'];
   completed: '' | 'yes' | 'no';
   tag: string;
+  archived: '' | 'yes' | 'no';   // 默认 'no' 只显示未归档
 }
 
 // 导入模式

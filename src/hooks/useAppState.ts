@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
-import type { AppData, TodoList, TodoTask, FilterOptions, ImportMode } from '@/types';
+import type { AppData, AppSettings, TodoList, TodoTask, FilterOptions, ImportMode } from '@/types';
+import { DEFAULT_SETTINGS } from '@/types';
 import {
   loadData,
   saveData,
@@ -12,7 +13,7 @@ import {
   deleteList,
   renameList,
 } from '@/services/storage';
-import { applyImport } from '@/services/importExport';
+import { applyImport, generateWeeklyText } from '@/services/importExport';
 
 export function useAppState() {
   const [data, setData] = useState<AppData>(() => loadData());
@@ -20,11 +21,16 @@ export function useAppState() {
     const d = loadData();
     return d.lists[0]?.id ?? '';
   });
-  const [filter, setFilter] = useState<FilterOptions>({
-    keyword: '',
-    priority: '',
-    completed: '',
-    tag: '',
+  const [filter, setFilter] = useState<FilterOptions>(() => {
+    const d = loadData();
+    const s = d.settings ?? DEFAULT_SETTINGS;
+    return {
+      keyword: '',
+      priority: '',
+      completed: s.defaultFilter === 'all' ? '' : s.defaultFilter === 'done' ? 'yes' : 'no',
+      tag: '',
+      archived: 'no',
+    };
   });
 
   // 持久化
@@ -64,7 +70,10 @@ export function useAppState() {
   // 任务操作
   // ==========================================================
   const handleAddTask = useCallback((listId: string, title: string) => {
-    setData((prev) => addTask(prev, listId, title).data);
+    setData((prev) => {
+      const priority = prev.settings?.defaultPriority ?? DEFAULT_SETTINGS.defaultPriority;
+      return addTask(prev, listId, title, priority).data;
+    });
   }, []);
 
   const handleUpdateTask = useCallback((taskId: string, patch: Partial<TodoTask>) => {
@@ -88,6 +97,10 @@ export function useAppState() {
     doExport(data);
   }, [data]);
 
+  const handleGenerateWeekly = useCallback((): string => {
+    return generateWeeklyText(data);
+  }, [data]);
+
   const handleImport = useCallback(
     (incoming: AppData, mode: ImportMode) => {
       setData((prev) => {
@@ -102,6 +115,16 @@ export function useAppState() {
     },
     [activeListId],
   );
+
+  // ==========================================================
+  // 设置操作
+  // ==========================================================
+  const handleUpdateSettings = useCallback((patch: Partial<AppSettings>) => {
+    setData((prev) => ({
+      ...prev,
+      settings: { ...(prev.settings ?? DEFAULT_SETTINGS), ...patch },
+    }));
+  }, []);
 
   // ==========================================================
   // 筛选后的任务
@@ -128,6 +151,11 @@ export function useAppState() {
     if (filter.tag) {
       tasks = tasks.filter((t) => t.tags.includes(filter.tag));
     }
+    if (filter.archived === 'yes') {
+      tasks = tasks.filter((t) => t.archived);
+    } else if (filter.archived === 'no') {
+      tasks = tasks.filter((t) => !t.archived);
+    }
     return tasks;
   }, [data, activeListId, filter]);
 
@@ -151,7 +179,9 @@ export function useAppState() {
     handleDeleteTask,
     handleToggleTask,
     handleExport,
+    handleGenerateWeekly,
     handleImport,
+    handleUpdateSettings,
     filteredTasks,
     allTags,
   };

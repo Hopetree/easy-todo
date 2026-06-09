@@ -7,9 +7,10 @@ interface Props {
   data: AppData;
   onExport: () => void;
   onImport: (data: AppData, mode: ImportMode) => void;
+  variant?: 'compact' | 'full';
 }
 
-export function ImportExport({ data, onExport, onImport }: Props) {
+export function ImportExport({ data, onExport, onImport, variant = 'compact' }: Props) {
   const fileRef = useRef<HTMLInputElement>(null);
   const [importError, setImportError] = useState<string | null>(null);
   const [importData, setImportData] = useState<AppData | null>(null);
@@ -39,18 +40,24 @@ export function ImportExport({ data, onExport, onImport }: Props) {
     setShowMode(false);
   };
 
+  const isFull = variant === 'full';
+
   return (
-    <div className={styles.container}>
-      <button className={styles.btn} onClick={onExport} title="导出数据">
-        ⤓ 导出
+    <div className={`${styles.container} ${isFull ? styles.fullContainer : ''}`}>
+      <button
+        className={isFull ? styles.fullBtn : styles.btn}
+        onClick={onExport}
+        title="导出数据"
+      >
+        ⤓ 导出全部数据
       </button>
 
       <button
-        className={styles.btn}
+        className={isFull ? styles.fullBtn : styles.btn}
         onClick={() => fileRef.current?.click()}
         title="导入数据"
       >
-        ⤒ 导入
+        ⤒ 从文件导入
       </button>
       <input
         ref={fileRef}

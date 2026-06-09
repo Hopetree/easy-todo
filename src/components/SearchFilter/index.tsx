@@ -16,10 +16,11 @@ export function SearchFilter({ filter, allTags, onChange }: Props) {
     filter.keyword !== '' ||
     filter.priority !== '' ||
     filter.completed !== '' ||
-    filter.tag !== '';
+    filter.tag !== '' ||
+    filter.archived !== 'no';
 
   const clearAll = () => {
-    onChange({ keyword: '', priority: '', completed: '', tag: '' });
+    onChange({ keyword: '', priority: '', completed: '', tag: '', archived: 'no' });
   };
 
   return (
@@ -59,6 +60,16 @@ export function SearchFilter({ filter, allTags, onChange }: Props) {
           <option value="">全部状态</option>
           <option value="no">未完成</option>
           <option value="yes">已完成</option>
+        </select>
+
+        <select
+          className={styles.select}
+          value={filter.archived}
+          onChange={(e) => update({ archived: e.target.value as '' | 'yes' | 'no' })}
+        >
+          <option value="no">未归档</option>
+          <option value="yes">已归档</option>
+          <option value="">全部（含归档）</option>
         </select>
 
         {allTags.length > 0 && (

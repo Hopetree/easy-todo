@@ -11,6 +11,7 @@ interface Props {
   onAdd: (name: string, color: string) => void;
   onDelete: (id: string) => void;
   onRename: (id: string, name: string) => void;
+  confirmDelete?: boolean;
 }
 
 export function ListManager({
@@ -21,6 +22,7 @@ export function ListManager({
   onAdd,
   onDelete,
   onRename,
+  confirmDelete = true,
 }: Props) {
   const [newName, setNewName] = useState('');
   const [showInput, setShowInput] = useState(false);
@@ -100,7 +102,7 @@ export function ListManager({
                     title="删除列表"
                     onClick={(e) => {
                       e.stopPropagation();
-                      if (confirm(`确定删除列表「${list.name}」及其所有任务？`)) {
+                      if (!confirmDelete || confirm(`确定删除列表「${list.name}」及其所有任务？`)) {
                         onDelete(list.id);
                       }
                     }}
@@ -130,18 +132,20 @@ export function ListManager({
             }}
             autoFocus
           />
-          <button className={styles.confirmBtn} onClick={handleAdd}>
-            ✓
-          </button>
-          <button
-            className={styles.cancelBtn}
-            onClick={() => {
-              setShowInput(false);
-              setNewName('');
-            }}
-          >
-            ×
-          </button>
+          <div className={styles.addActions}>
+            <button className={styles.confirmBtn} onClick={handleAdd}>
+              ✓
+            </button>
+            <button
+              className={styles.cancelBtn}
+              onClick={() => {
+                setShowInput(false);
+                setNewName('');
+              }}
+            >
+              ×
+            </button>
+          </div>
         </div>
       ) : (
         <button className={styles.addBtn} onClick={() => setShowInput(true)}>
