@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { AppData, AppSettings, ImportMode } from '@/types';
 import { DEFAULT_SETTINGS } from '@/types';
 import { ImportExport } from '@/components/ImportExport';
+import { version } from '@/../package.json';
 import styles from './index.module.css';
 
 interface Props {
@@ -37,6 +38,7 @@ export function Settings({
         </button>
         <h2 className={styles.title}>设置</h2>
         <div className={styles.spacer} />
+        <span className={styles.version}>v{version}</span>
       </header>
 
       <div className={styles.body}>
