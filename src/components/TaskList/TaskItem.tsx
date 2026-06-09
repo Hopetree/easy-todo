@@ -145,16 +145,15 @@ export function TaskItem({ task, listColor, defaultExpanded = false, confirmDele
   return (
     <div
       className={`${styles.item} ${task.completed ? styles.completed : ''} ${isDragging ? styles.dragging : ''}`}
-      draggable={!editing}
-      onDragStart={() => onDragStart?.()}
-      onDragEnd={() => onDragEnd?.()}
       onDragOver={(e) => onDragOver?.(e)}
     >
       <div className={styles.row}>
         <span
           className={styles.dragHandle}
           title="拖动排序"
-          onMouseDown={(e) => e.stopPropagation()}
+          draggable={!editing}
+          onDragStart={() => onDragStart?.()}
+          onDragEnd={() => onDragEnd?.()}
         >
           ⠿
         </span>
