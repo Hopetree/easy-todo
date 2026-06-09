@@ -28,8 +28,8 @@
 .fullBtn {
   flex: 1;
   padding: 12px 8px;
-  border: 2px dashed #cbd5e1;
-  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  background: #fff;
   border-radius: 8px;
   cursor: pointer;
   font-size: 13px;
@@ -39,9 +39,9 @@
   transition: all 0.15s;
 }
 .fullBtn:hover {
-  background: #eff6ff;
-  border-color: #3b82f6;
-  color: #2563eb;
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #334155;
 }
 
 .fileInput {
