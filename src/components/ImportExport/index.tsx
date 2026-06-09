@@ -50,7 +50,7 @@ export function ImportExport({ data, onExport, onImport, onExportCSV, variant = 
         onClick={onExport}
         title="导出数据"
       >
-        ⤓ 导出全部数据
+        📤 导出 JSON
       </button>
 
       <button
@@ -58,7 +58,7 @@ export function ImportExport({ data, onExport, onImport, onExportCSV, variant = 
         onClick={() => fileRef.current?.click()}
         title="导入数据"
       >
-        ⤒ 从文件导入
+        📥 导入 JSON
       </button>
 
       {isFull && onExportCSV && (
