@@ -163,9 +163,9 @@ export function toggleTask(data: AppData, taskId: string): AppData {
 
 export function deleteList(data: AppData, listId: string): AppData {
   return {
+    ...data,
     lists: data.lists.filter((l) => l.id !== listId),
     tasks: data.tasks.filter((t) => t.listId !== listId),
-    version: data.version,
   };
 }
 

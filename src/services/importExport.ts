@@ -132,9 +132,9 @@ export function applyImport(
   const newTasks = incoming.tasks.filter((t) => !existingTaskIds.has(t.id));
 
   return {
+    ...current,
     lists: [...current.lists, ...newLists],
     tasks: [...current.tasks, ...newTasks],
-    version: current.version,
   };
 }
 
