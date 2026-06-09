@@ -10,6 +10,7 @@ export interface TodoTask {
   note: string;
   progress: number;          // 0-100
   archived: boolean;         // 已归档
+  sortOrder: number;         // 手动排序序号
   createdAt: string;
   updatedAt: string;
 }

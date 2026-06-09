@@ -7,9 +7,13 @@ interface Props {
   listColor?: string;
   defaultExpanded?: boolean;
   confirmDelete?: boolean;
+  isDragging?: boolean;
   onToggle: (id: string) => void;
   onDelete: (id: string) => void;
   onUpdate: (id: string, patch: Partial<TodoTask>) => void;
+  onDragStart?: () => void;
+  onDragEnd?: () => void;
+  onDragOver?: (e: React.DragEvent) => void;
 }
 
 const PRIORITY_LABELS: Record<string, string> = {
@@ -18,7 +22,7 @@ const PRIORITY_LABELS: Record<string, string> = {
   low: '低',
 };
 
-export function TaskItem({ task, listColor, defaultExpanded = false, confirmDelete = true, onToggle, onDelete, onUpdate }: Props) {
+export function TaskItem({ task, listColor, defaultExpanded = false, confirmDelete = true, isDragging, onToggle, onDelete, onUpdate, onDragStart, onDragEnd, onDragOver }: Props) {
   const [editing, setEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(task.title);
   const [editNote, setEditNote] = useState(task.note);
@@ -139,8 +143,21 @@ export function TaskItem({ task, listColor, defaultExpanded = false, confirmDele
   }
 
   return (
-    <div className={`${styles.item} ${task.completed ? styles.completed : ''}`}>
+    <div
+      className={`${styles.item} ${task.completed ? styles.completed : ''} ${isDragging ? styles.dragging : ''}`}
+      draggable={!editing}
+      onDragStart={() => onDragStart?.()}
+      onDragEnd={() => onDragEnd?.()}
+      onDragOver={(e) => onDragOver?.(e)}
+    >
       <div className={styles.row}>
+        <span
+          className={styles.dragHandle}
+          title="拖动排序"
+          onMouseDown={(e) => e.stopPropagation()}
+        >
+          ⠿
+        </span>
         <button
           className={`${styles.checkbox} ${task.completed ? styles.checked : ''}`}
           onClick={() => onToggle(task.id)}

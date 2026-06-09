@@ -12,6 +12,8 @@ import {
   toggleTask,
   deleteList,
   renameList,
+  reorderLists,
+  reorderTasks,
 } from '@/services/storage';
 import { applyImport, generateWeeklyText } from '@/services/importExport';
 
@@ -64,6 +66,14 @@ export function useAppState() {
 
   const handleRenameList = useCallback((listId: string, name: string) => {
     setData((prev) => renameList(prev, listId, name));
+  }, []);
+
+  const handleReorderList = useCallback((ids: string[]) => {
+    setData((prev) => reorderLists(prev, ids));
+  }, []);
+
+  const handleReorderTasks = useCallback((listId: string, ids: string[]) => {
+    setData((prev) => reorderTasks(prev, listId, ids));
   }, []);
 
   // ==========================================================
@@ -174,6 +184,8 @@ export function useAppState() {
     handleAddList,
     handleDeleteList,
     handleRenameList,
+    handleReorderList,
+    handleReorderTasks,
     handleAddTask,
     handleUpdateTask,
     handleDeleteTask,

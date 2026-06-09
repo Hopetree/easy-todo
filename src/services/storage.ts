@@ -57,6 +57,7 @@ function migrateFrom0(data: Partial<AppData>): AppData {
       note: t.note ?? '',
       progress: t.progress ?? (t.completed ? 100 : 0),
       archived: t.archived ?? false,
+      sortOrder: t.sortOrder ?? 0,
     })),
     settings: data.settings ?? { ...DEFAULT_SETTINGS },
     version: CURRENT_VERSION,
@@ -118,6 +119,7 @@ export function addTask(data: AppData, listId: string, title: string, priority?:
     note: '',
     progress: 0,
     archived: false,
+    sortOrder: data.tasks.length,
     createdAt: now,
     updatedAt: now,
   };
@@ -171,5 +173,27 @@ export function renameList(data: AppData, listId: string, name: string): AppData
   return {
     ...data,
     lists: data.lists.map((l) => (l.id === listId ? { ...l, name } : l)),
+  };
+}
+
+export function reorderLists(data: AppData, ids: string[]): AppData {
+  const orderMap = new Map(ids.map((id, i) => [id, i]));
+  return {
+    ...data,
+    lists: data.lists
+      .map((l) => ({ ...l, sortOrder: orderMap.get(l.id) ?? l.sortOrder }))
+      .sort((a, b) => a.sortOrder - b.sortOrder),
+  };
+}
+
+export function reorderTasks(data: AppData, listId: string, ids: string[]): AppData {
+  const orderMap = new Map(ids.map((id, i) => [id, i]));
+  return {
+    ...data,
+    tasks: data.tasks.map((t) =>
+      t.listId === listId && orderMap.has(t.id)
+        ? { ...t, sortOrder: orderMap.get(t.id) ?? t.sortOrder, updatedAt: new Date().toISOString() }
+        : t,
+    ),
   };
 }

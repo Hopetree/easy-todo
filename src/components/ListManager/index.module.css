@@ -15,11 +15,14 @@
   display: flex;
   align-items: center;
   padding: 8px 10px;
-  cursor: pointer;
+  cursor: grab;
   border-radius: 6px;
   margin: 2px 6px;
-  transition: background 0.15s;
+  transition: background 0.15s, opacity 0.15s;
   gap: 6px;
+}
+.item:active {
+  cursor: grabbing;
 }
 .item:hover {
   background: #f1f5f9;
@@ -27,6 +30,9 @@
 .item.active {
   background: #e0e7ff;
   font-weight: 600;
+}
+.item.dragging {
+  opacity: 0.4;
 }
 
 .dot {

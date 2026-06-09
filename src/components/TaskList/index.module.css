@@ -16,7 +16,7 @@
   border-radius: 8px;
   padding: 10px 10px;
   border: 1px solid #e2e8f0;
-  transition: border-color 0.15s;
+  transition: border-color 0.15s, opacity 0.15s;
 }
 .item:hover {
   border-color: #cbd5e1;
@@ -27,6 +27,26 @@
 .item.editing {
   border-color: #3b82f6;
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+.item.dragging {
+  opacity: 0.4;
+  border-style: dashed;
+}
+
+.dragHandle {
+  cursor: grab;
+  color: #cbd5e1;
+  font-size: 16px;
+  user-select: none;
+  flex-shrink: 0;
+  line-height: 1;
+  padding: 2px 0;
+}
+.dragHandle:hover {
+  color: #94a3b8;
+}
+.dragHandle:active {
+  cursor: grabbing;
 }
 
 .row {

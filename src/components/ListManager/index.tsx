@@ -11,6 +11,7 @@ interface Props {
   onAdd: (name: string, color: string) => void;
   onDelete: (id: string) => void;
   onRename: (id: string, name: string) => void;
+  onReorder: (ids: string[]) => void;
   confirmDelete?: boolean;
 }
 
@@ -22,12 +23,28 @@ export function ListManager({
   onAdd,
   onDelete,
   onRename,
+  onReorder,
   confirmDelete = true,
 }: Props) {
   const [newName, setNewName] = useState('');
   const [showInput, setShowInput] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState('');
+  const [dragId, setDragId] = useState<string | null>(null);
+
+  const handleDragStart = (id: string) => setDragId(id);
+  const handleDragEnd = () => setDragId(null);
+
+  const handleDragOver = (e: React.DragEvent, targetId: string) => {
+    e.preventDefault();
+    if (!dragId || dragId === targetId) return;
+    const fromIdx = lists.findIndex((l) => l.id === dragId);
+    const toIdx = lists.findIndex((l) => l.id === targetId);
+    const newIds = [...lists.map((l) => l.id)];
+    newIds.splice(fromIdx, 1);
+    newIds.splice(toIdx, 0, dragId);
+    onReorder(newIds);
+  };
 
   const handleAdd = () => {
     const name = newName.trim();
@@ -59,8 +76,12 @@ export function ListManager({
           return (
             <div
               key={list.id}
-              className={`${styles.item} ${isActive ? styles.active : ''}`}
+              className={`${styles.item} ${isActive ? styles.active : ''} ${dragId === list.id ? styles.dragging : ''}`}
               onClick={() => onSelect(list.id)}
+              draggable
+              onDragStart={() => handleDragStart(list.id)}
+              onDragEnd={handleDragEnd}
+              onDragOver={(e) => handleDragOver(e, list.id)}
             >
               <span
                 className={styles.dot}

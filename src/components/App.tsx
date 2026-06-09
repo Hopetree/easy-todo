@@ -51,6 +51,7 @@ export function App() {
             onAdd={state.handleAddList}
             onDelete={state.handleDeleteList}
             onRename={state.handleRenameList}
+            onReorder={state.handleReorderList}
             confirmDelete={state.data.settings?.confirmBeforeDelete}
           />
         </aside>
@@ -70,6 +71,7 @@ export function App() {
             onToggle={state.handleToggleTask}
             onDelete={state.handleDeleteTask}
             onUpdate={state.handleUpdateTask}
+            onReorder={(ids) => state.handleReorderTasks(state.activeListId, ids)}
           />
         </main>
       </div>
