@@ -1,9 +1,12 @@
 {
-  "last_reviewed_commit": null,
-  "last_reviewed_commit_short": null,
-  "last_review_date": null,
-  "last_review_summary": null,
-  "documents_updated": [],
+  "last_reviewed_commit": "0e591b72b3c9676bce241b364a8665eea3b38067",
+  "last_reviewed_commit_short": "0e591b7",
+  "last_review_date": "2026-06-09",
+  "last_review_summary": "新增设置页面、任务进度、归档筛选、拖拽排序、周报生成功能",
+  "documents_updated": [
+    "docs/design/01_PRD_产品需求规格说明书.md",
+    "docs/design/02_TDD_技术架构设计文档.md"
+  ],
   "documents": [
     {
       "path": "docs/design/01_PRD_产品需求规格说明书.md",
@@ -22,6 +25,12 @@
       "type": "README",
       "description": "项目说明，包含快速开始和文档索引",
       "created_at": "2026-06-08"
+    },
+    {
+      "path": "docs/code-review.md",
+      "type": "CODE_REVIEW",
+      "description": "代码审查报告，记录每次 review 发现的问题和修复状态",
+      "created_at": "2026-06-09"
     }
   ]
 }

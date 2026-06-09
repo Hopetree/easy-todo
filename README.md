@@ -35,3 +35,4 @@ npm run build
 |------|------|
 | [PRD 产品需求规格](docs/design/01_PRD_产品需求规格说明书.md) | 用户故事、核心功能、功能边界 |
 | [TDD 技术架构设计](docs/design/02_TDD_技术架构设计文档.md) | 技术选型、模块划分、数据模型 |
+| [Code Review 报告](docs/code-review.md) | 代码审查问题跟踪 |

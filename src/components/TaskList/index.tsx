@@ -3,6 +3,8 @@ import type { TodoTask, TodoList } from '@/types';
 import { TaskItem } from './TaskItem';
 import styles from './index.module.css';
 
+const PRIORITY_ORDER: Record<string, number> = { high: 3, medium: 2, low: 1 };
+
 interface Props {
   tasks: TodoTask[];
   lists: TodoList[];
@@ -24,7 +26,6 @@ export function TaskList({ tasks, lists, defaultExpanded, confirmDelete, onToggl
   const getListInfo = (listId: string) => lists.find((l) => l.id === listId);
 
   // 排序：sortOrder 升序 → 优先级高到低 → 更新时间倒序（同组内未完成在前）
-  const PRIORITY_ORDER: Record<string, number> = { high: 3, medium: 2, low: 1 };
   const sorted = [...tasks].sort((a, b) => {
     if (a.completed !== b.completed) return a.completed ? 1 : -1;
     if (a.sortOrder !== b.sortOrder) return a.sortOrder - b.sortOrder;

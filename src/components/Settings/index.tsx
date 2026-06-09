@@ -64,9 +64,13 @@ export function Settings({
               <button
                 className={`${styles.copyBtn} ${copied ? styles.copied : ''}`}
                 onClick={async () => {
-                  await navigator.clipboard.writeText(weeklyText);
-                  setCopied(true);
-                  setTimeout(() => setCopied(false), 1500);
+                  try {
+                    await navigator.clipboard.writeText(weeklyText);
+                    setCopied(true);
+                    setTimeout(() => setCopied(false), 1500);
+                  } catch {
+                    // clipboard API 不可用，静默失败
+                  }
                 }}
               >
                 {copied ? '✓ 已复制' : '复制'}

@@ -32,9 +32,10 @@
 │  │  ┌─────────┐ ┌──────────┐ ┌───────┐ │     │
 │  │  │列表管理  │ │任务列表   │ │搜索筛 │ │     │
 │  │  │Sidebar  │ │TaskList  │ │选面板 │ │     │
-│  │  └─────────┘ └──────────┘ └───────┘ │     │
+│  │  │(拖拽)   │ │(拖拽)    │ └───────┘ │     │
+│  │  └─────────┘ └──────────┘           │     │
 │  │  ┌──────────────────────────────┐   │     │
-│  │  │  导入/导出工具栏              │   │     │
+│  │  │  设置页面 (导入导出+周报)     │   │     │
 │  │  └──────────────────────────────┘   │     │
 │  └─────────────────────────────────────┘     │
 │                      │                        │
@@ -57,8 +58,9 @@
 | **TaskEditor** | 任务创建/编辑表单（含属性面板） | `components/TaskEditor/` |
 | **SearchFilter** | 关键词搜索 + 字段筛选组合 | `components/SearchFilter/` |
 | **ImportExport** | 数据导出 JSON / 导入 JSON | `components/ImportExport/` |
-| **Storage Service** | localStorage 读写封装 | `services/storage.ts` |
-| **ImportExport Service** | 文件读写、数据校验、合并策略 | `services/importExport.ts` |
+| **Settings** | 设置页面（配置项+导入导出+周报） | `components/Settings/` |
+| **Storage Service** | localStorage 读写封装 + 拖拽排序 | `services/storage.ts` |
+| **ImportExport Service** | 文件读写、数据校验、合并、周报生成 | `services/importExport.ts` |
 
 ---
 
@@ -75,6 +77,9 @@ interface TodoTask {
   dueDate: string | null;   // ISO 日期字符串
   tags: string[];           // 标签列表
   note: string;             // 备注
+  progress: number;         // 进度 0-100，默认 0，完成自动 100
+  archived: boolean;        // 已归档，默认 false
+  sortOrder: number;        // 手动排序序号，新建自动递增
   createdAt: string;        // 创建时间
   updatedAt: string;        // 更新时间
 }
@@ -88,10 +93,19 @@ interface TodoList {
   sortOrder: number;        // 排序序号
 }
 
+// 应用设置
+interface AppSettings {
+  taskDefaultExpanded: boolean;   // 任务默认展开详情
+  defaultPriority: 'high' | 'medium' | 'low';
+  defaultFilter: 'all' | 'todo' | 'done';  // 默认筛选视图
+  confirmBeforeDelete: boolean;   // 删除前确认
+}
+
 // 应用全局状态
 interface AppData {
   lists: TodoList[];
   tasks: TodoTask[];
+  settings: AppSettings;
   version: number;          // 数据版本号
   exportedAt?: string;      // 最后导出时间
 }
@@ -181,3 +195,11 @@ easy-todo/
 ├── package.json
 └── tsconfig.json
 ```
+
+---
+
+## 变更记录
+
+| 版本 | 日期 | 变更说明 |
+|------|------|---------|
+| v1.1 | 2026-06-09 | 根据 commit 0e591b7 更新：数据模型新增 progress/archived/sortOrder/AppSettings；新增 Settings 组件和 reorderTasks/reorderLists/generateWeeklyText 服务 |

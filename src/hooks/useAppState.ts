@@ -15,7 +15,7 @@ import {
   reorderLists,
   reorderTasks,
 } from '@/services/storage';
-import { applyImport, generateWeeklyText } from '@/services/importExport';
+import { applyImport, generateWeeklyText, exportData } from '@/services/importExport';
 
 export function useAppState() {
   const [data, setData] = useState<AppData>(() => loadData());
@@ -103,8 +103,7 @@ export function useAppState() {
   // ==========================================================
   const handleExport = useCallback(() => {
     saveDataImmediate(data);
-    const { exportData: doExport } = require('@/services/importExport');
-    doExport(data);
+    exportData(data);
   }, [data]);
 
   const handleGenerateWeekly = useCallback((): string => {
