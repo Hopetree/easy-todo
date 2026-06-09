@@ -173,10 +173,14 @@
   border-radius: 2px;
   margin-top: 6px;
   overflow: hidden;
+  position: relative;
 }
 
 .progressFill {
-  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 4px;
   background: #22c55e;
   border-radius: 2px;
   transition: width 0.3s ease;
