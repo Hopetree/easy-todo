@@ -125,7 +125,7 @@ export function TaskItem({ task, listColor, defaultExpanded = false, confirmDele
           value={editNote}
           onChange={(e) => setEditNote(e.target.value)}
           onKeyDown={handleKeyDown}
-          rows={2}
+          rows={4}
         />
         <div className={styles.editActions}>
           <button className={styles.saveBtn} onClick={saveEdit}>
