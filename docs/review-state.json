@@ -1,12 +1,9 @@
 {
-  "last_reviewed_commit": "0e591b72b3c9676bce241b364a8665eea3b38067",
-  "last_reviewed_commit_short": "0e591b7",
+  "last_reviewed_commit": "8cebde24161a3ecf187984ee62437e06ae6839a5",
+  "last_reviewed_commit_short": "8cebde2",
   "last_review_date": "2026-06-09",
-  "last_review_summary": "新增设置页面、任务进度、归档筛选、拖拽排序、周报生成功能",
-  "documents_updated": [
-    "docs/design/01_PRD_产品需求规格说明书.md",
-    "docs/design/02_TDD_技术架构设计文档.md"
-  ],
+  "last_review_summary": "修复滚动区域、CSV 导出、emoji 图标、版本号，代码质量良好无新增问题",
+  "documents_updated": [],
   "documents": [
     {
       "path": "docs/design/01_PRD_产品需求规格说明书.md",
