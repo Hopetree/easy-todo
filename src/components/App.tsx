@@ -32,7 +32,7 @@ export function App() {
   return (
     <div className={styles.app}>
       <header className={styles.header}>
-        <h1 className={styles.title}>Easy Todo</h1>
+        <h1 className={styles.title}>{state.data.settings?.appTitle ?? 'Easy Todo'}</h1>
         <button
           className={styles.settingsBtn}
           onClick={() => setView('settings')}

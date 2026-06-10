@@ -188,6 +188,21 @@
   min-width: 100px;
 }
 
+.input {
+  width: 180px;
+  padding: 6px 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #334155;
+  outline: none;
+  font-family: inherit;
+}
+.input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.08);
+}
+
 /* ---- toggle switch ---- */
 .toggle {
   position: relative;

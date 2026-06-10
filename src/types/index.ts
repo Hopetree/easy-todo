@@ -28,11 +28,13 @@ export interface TodoList {
 export interface AppSettings {
   taskDefaultExpanded: boolean;   // 任务默认展开详情
   defaultPriority: TodoTask['priority'];
+  appTitle: string;              // 插件标题，默认 "Easy Todo"
   defaultFilter: '' | 'all' | 'todo' | 'done';  // 默认筛选状态
   confirmBeforeDelete: boolean;   // 删除前确认
 }
 
 export const DEFAULT_SETTINGS: AppSettings = {
+  appTitle: 'Easy Todo',
   taskDefaultExpanded: false,
   defaultPriority: 'medium',
   defaultFilter: 'all',

@@ -59,7 +59,7 @@ function migrateFrom0(data: Partial<AppData>): AppData {
       archived: t.archived ?? false,
       sortOrder: t.sortOrder ?? 0,
     })),
-    settings: data.settings ?? { ...DEFAULT_SETTINGS },
+    settings: { ...DEFAULT_SETTINGS, ...data.settings },
     version: CURRENT_VERSION,
   };
 }

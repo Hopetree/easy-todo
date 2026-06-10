@@ -43,6 +43,26 @@ export function Settings({
       </header>
 
       <div className={styles.body}>
+        {/* 常规设置 */}
+        <section className={styles.section}>
+          <h3 className={styles.sectionTitle}>常规设置</h3>
+          <div className={styles.card}>
+            <div className={styles.row}>
+              <div className={styles.label}>
+                <span className={styles.labelText}>插件标题</span>
+                <span className={styles.labelHint}>显示在主页左上角的名称</span>
+              </div>
+              <input
+                className={styles.input}
+                type="text"
+                value={s.appTitle}
+                onChange={(e) => onUpdateSettings({ appTitle: e.target.value })}
+                placeholder="Easy Todo"
+              />
+            </div>
+          </div>
+        </section>
+
         {/* 数据管理 */}
         <section className={styles.section}>
           <h3 className={styles.sectionTitle}>数据管理</h3>
