@@ -5,6 +5,7 @@ import styles from './index.module.css';
 
 interface Props {
   task: TodoTask;
+  lists: { id: string; name: string }[];
   listColor?: string;
   defaultExpanded?: boolean;
   confirmDelete?: boolean;
@@ -23,7 +24,7 @@ const PRIORITY_LABELS: Record<string, string> = {
   low: '低',
 };
 
-export function TaskItem({ task, listColor, defaultExpanded = false, confirmDelete = true, isDragging, onToggle, onDelete, onUpdate, onDragStart, onDragEnd, onDragOver }: Props) {
+export function TaskItem({ task, lists, listColor, defaultExpanded = false, confirmDelete = true, isDragging, onToggle, onDelete, onUpdate, onDragStart, onDragEnd, onDragOver }: Props) {
   const [editing, setEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(task.title);
   const [editNote, setEditNote] = useState(task.note);
@@ -32,6 +33,7 @@ export function TaskItem({ task, listColor, defaultExpanded = false, confirmDele
   const [editTags, setEditTags] = useState(task.tags.join(', '));
   const [editProgress, setEditProgress] = useState(task.progress);
   const [editArchived, setEditArchived] = useState(task.archived);
+  const [editListId, setEditListId] = useState(task.listId);
   const [expanded, setExpanded] = useState(defaultExpanded);
 
   const saveEdit = () => {
@@ -39,6 +41,7 @@ export function TaskItem({ task, listColor, defaultExpanded = false, confirmDele
     if (!title) return;
     onUpdate(task.id, {
       title,
+      listId: editListId,
       note: editNote.trim(),
       priority: editPriority,
       dueDate: editDueDate || null,
@@ -52,6 +55,10 @@ export function TaskItem({ task, listColor, defaultExpanded = false, confirmDele
     setEditing(false);
   };
 
+  const resetEdit = () => {
+    setEditing(false);
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) saveEdit();
     if (e.key === 'Escape') {
@@ -62,6 +69,7 @@ export function TaskItem({ task, listColor, defaultExpanded = false, confirmDele
       setEditTags(task.tags.join(', '));
       setEditProgress(task.progress);
       setEditArchived(task.archived);
+      setEditListId(task.listId);
       setEditing(false);
     }
   };
@@ -78,6 +86,11 @@ export function TaskItem({ task, listColor, defaultExpanded = false, confirmDele
           autoFocus
         />
         <div className={styles.editFields}>
+          <CustomSelect
+            value={editListId}
+            options={lists.map((l) => ({ value: l.id, label: l.name }))}
+            onChange={(v) => setEditListId(v)}
+          />
           <CustomSelect
             value={editPriority}
             options={[
@@ -203,6 +216,7 @@ export function TaskItem({ task, listColor, defaultExpanded = false, confirmDele
             setEditTags(task.tags.join(', '));
             setEditProgress(task.progress);
             setEditArchived(task.archived);
+            setEditListId(task.listId);
             setEditing(true);
           }}
         >

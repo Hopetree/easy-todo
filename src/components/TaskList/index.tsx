@@ -55,6 +55,7 @@ export function TaskList({ tasks, lists, defaultExpanded, confirmDelete, onToggl
         <TaskItem
           key={task.id}
           task={task}
+          lists={lists}
           listColor={getListInfo(task.listId)?.color}
           defaultExpanded={defaultExpanded}
           confirmDelete={confirmDelete}
