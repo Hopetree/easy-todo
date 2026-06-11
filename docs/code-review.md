@@ -1,5 +1,13 @@
 # Code Review 报告
 
+## 第三次 Review：`8cebde2..a7bdbc4` + 工作区（2026-06-11）
+
+**变更**：CustomSelect 组件、CI/CD、appTitle、列表切换、样式修复
+
+✅ 1 个轻微问题（已修复）：TaskItem 中 `resetEdit` 死代码已移除。
+
+---
+
 ## 第二次 Review：`0e591b7..8cebde2`（2026-06-09）
 
 **变更**：修复滚动区域、CSV 导出、emoji 图标、版本号显示、代码质量修复

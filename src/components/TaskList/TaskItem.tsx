@@ -55,10 +55,6 @@ export function TaskItem({ task, lists, listColor, defaultExpanded = false, conf
     setEditing(false);
   };
 
-  const resetEdit = () => {
-    setEditing(false);
-  };
-
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) saveEdit();
     if (e.key === 'Escape') {
@@ -139,8 +135,13 @@ export function TaskItem({ task, lists, listColor, defaultExpanded = false, conf
           placeholder="备注..."
           value={editNote}
           onChange={(e) => setEditNote(e.target.value)}
+          onInput={(e) => {
+            const el = e.currentTarget;
+            el.style.height = 'auto';
+            el.style.height = el.scrollHeight + 'px';
+          }}
           onKeyDown={handleKeyDown}
-          rows={4}
+          rows={5}
         />
         <div className={styles.editActions}>
           <button className={styles.saveBtn} onClick={saveEdit}>

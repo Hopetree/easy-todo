@@ -1,8 +1,8 @@
 {
-  "last_reviewed_commit": "8cebde24161a3ecf187984ee62437e06ae6839a5",
-  "last_reviewed_commit_short": "8cebde2",
-  "last_review_date": "2026-06-09",
-  "last_review_summary": "修复滚动区域、CSV 导出、emoji 图标、版本号，代码质量良好无新增问题",
+  "last_reviewed_commit": "a7bdbc46abc87ff4c6e0391c2dc02080f0292a59",
+  "last_reviewed_commit_short": "a7bdbc4",
+  "last_review_date": "2026-06-11",
+  "last_review_summary": "CustomSelect 组件、CI/CD、appTitle、列表切换、样式修复，1 个死代码问题已修复",
   "documents_updated": [],
   "documents": [
     {
