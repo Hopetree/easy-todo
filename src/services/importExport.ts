@@ -19,7 +19,7 @@ export function generateWeeklyText(data: AppData): string {
     lines.push(`${listIndex}、${list.name}`);
 
     listTasks.forEach((task, i) => {
-      lines.push(`  ${i + 1}）${task.title} (${task.progress}%)`);
+      lines.push(`  （${i + 1}）${task.title} (${task.progress}%)`);
     });
   });
 
