@@ -12,7 +12,7 @@ export function generateWeeklyText(data: AppData): string {
   // 只显示有任务的列表
   let listIndex = 0;
   data.lists.forEach((list) => {
-    const listTasks = data.tasks.filter((t) => t.listId === list.id && !t.archived);
+    const listTasks = data.tasks.filter((t) => t.listId === list.id && !t.archived && !t.suspended);
     if (listTasks.length === 0) return;
 
     listIndex++;
@@ -35,7 +35,7 @@ export function generateWeeklyText(data: AppData): string {
 // ============================================================
 export function exportCSV(data: AppData): void {
   const listMap = new Map(data.lists.map((l) => [l.id, l.name]));
-  const header = ['标题', '列表', '优先级', '完成', '进度', '截止日期', '标签', '备注', '已归档'];
+  const header = ['标题', '列表', '优先级', '完成', '进度', '截止日期', '标签', '备注', '已归档', '已挂起'];
   const priorityLabel: Record<string, string> = { high: '高', medium: '中', low: '低' };
 
   const rows = data.tasks.map((t) => [
@@ -48,6 +48,7 @@ export function exportCSV(data: AppData): void {
     escapeCSV(t.tags.join('、')),
     escapeCSV(t.note),
     t.archived ? '是' : '否',
+    t.suspended ? '是' : '否',
   ]);
 
   const csv = [header.join(','), ...rows.map((r) => r.join(','))].join('\n');

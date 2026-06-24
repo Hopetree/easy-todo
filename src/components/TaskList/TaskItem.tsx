@@ -33,6 +33,7 @@ export function TaskItem({ task, lists, listColor, defaultExpanded = false, conf
   const [editTags, setEditTags] = useState(task.tags.join(', '));
   const [editProgress, setEditProgress] = useState(task.progress);
   const [editArchived, setEditArchived] = useState(task.archived);
+  const [editSuspended, setEditSuspended] = useState(task.suspended);
   const [editListId, setEditListId] = useState(task.listId);
   const [expanded, setExpanded] = useState(defaultExpanded);
 
@@ -51,6 +52,7 @@ export function TaskItem({ task, lists, listColor, defaultExpanded = false, conf
         .filter(Boolean),
       progress: editProgress,
       archived: editArchived,
+      suspended: editSuspended,
     });
     setEditing(false);
   };
@@ -65,6 +67,7 @@ export function TaskItem({ task, lists, listColor, defaultExpanded = false, conf
       setEditTags(task.tags.join(', '));
       setEditProgress(task.progress);
       setEditArchived(task.archived);
+      setEditSuspended(task.suspended);
       setEditListId(task.listId);
       setEditing(false);
     }
@@ -129,6 +132,14 @@ export function TaskItem({ task, lists, listColor, defaultExpanded = false, conf
             onChange={(e) => setEditArchived(e.target.checked)}
           />
           已归档（不显示在周报中）
+        </label>
+        <label className={styles.editArchiveLabel}>
+          <input
+            type="checkbox"
+            checked={editSuspended}
+            onChange={(e) => setEditSuspended(e.target.checked)}
+          />
+          已挂起（不显示在周报中）
         </label>
         <textarea
           className={styles.editNoteArea}
@@ -203,9 +214,22 @@ export function TaskItem({ task, lists, listColor, defaultExpanded = false, conf
             {task.archived && (
               <span className={styles.archivedTag}>已归档</span>
             )}
+            {task.suspended && (
+              <span className={styles.suspendedTag}>已挂起</span>
+            )}
           </div>
         </div>
 
+        <button
+          className={`${styles.suspendBtn} ${task.suspended ? styles.suspended : ''}`}
+          title={task.suspended ? '取消挂起' : '挂起'}
+          onClick={(e) => {
+            e.stopPropagation();
+            onUpdate(task.id, { suspended: !task.suspended });
+          }}
+        >
+          {task.suspended ? '▶' : '⏸'}
+        </button>
         <button
           className={styles.editBtn}
           title="编辑"
@@ -217,6 +241,7 @@ export function TaskItem({ task, lists, listColor, defaultExpanded = false, conf
             setEditTags(task.tags.join(', '));
             setEditProgress(task.progress);
             setEditArchived(task.archived);
+            setEditSuspended(task.suspended);
             setEditListId(task.listId);
             setEditing(true);
           }}

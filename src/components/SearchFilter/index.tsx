@@ -18,6 +18,11 @@ const ARCHIVED_OPTIONS = [
   { value: 'yes', label: '已归档' },
   { value: '', label: '全部（含归档）' },
 ];
+const SUSPENDED_OPTIONS = [
+  { value: '', label: '全部（含挂起）' },
+  { value: 'no', label: '未挂起' },
+  { value: 'yes', label: '已挂起' },
+];
 
 interface Props {
   filter: FilterOptions;
@@ -35,10 +40,11 @@ export function SearchFilter({ filter, allTags, onChange }: Props) {
     filter.priority !== '' ||
     filter.completed !== '' ||
     filter.tag !== '' ||
-    filter.archived !== 'no';
+    filter.archived !== 'no' ||
+    filter.suspended !== '';
 
   const clearAll = () => {
-    onChange({ keyword: '', priority: '', completed: '', tag: '', archived: 'no' });
+    onChange({ keyword: '', priority: '', completed: '', tag: '', archived: 'no', suspended: '' });
   };
 
   return (
@@ -76,6 +82,12 @@ export function SearchFilter({ filter, allTags, onChange }: Props) {
           value={filter.archived}
           options={ARCHIVED_OPTIONS}
           onChange={(v) => update({ archived: v as '' | 'yes' | 'no' })}
+        />
+        <CustomSelect
+          className={styles.select}
+          value={filter.suspended}
+          options={SUSPENDED_OPTIONS}
+          onChange={(v) => update({ suspended: v as '' | 'yes' | 'no' })}
         />
         {allTags.length > 0 && (
           <CustomSelect

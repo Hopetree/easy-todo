@@ -32,6 +32,7 @@ export function useAppState() {
       completed: s.defaultFilter === 'all' ? '' : s.defaultFilter === 'done' ? 'yes' : 'no',
       tag: '',
       archived: 'no',
+      suspended: '',
     };
   });
 
@@ -169,6 +170,11 @@ export function useAppState() {
       tasks = tasks.filter((t) => t.archived);
     } else if (filter.archived === 'no') {
       tasks = tasks.filter((t) => !t.archived);
+    }
+    if (filter.suspended === 'yes') {
+      tasks = tasks.filter((t) => t.suspended);
+    } else if (filter.suspended === 'no') {
+      tasks = tasks.filter((t) => !t.suspended);
     }
     return tasks;
   }, [data, activeListId, filter]);

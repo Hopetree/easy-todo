@@ -10,6 +10,7 @@ export interface TodoTask {
   note: string;
   progress: number;          // 0-100
   archived: boolean;         // 已归档
+  suspended: boolean;        // 已挂起（不在周报中显示）
   sortOrder: number;         // 手动排序序号
   createdAt: string;
   updatedAt: string;
@@ -60,6 +61,7 @@ export interface FilterOptions {
   completed: '' | 'yes' | 'no';
   tag: string;
   archived: '' | 'yes' | 'no';   // 默认 'no' 只显示未归档
+  suspended: '' | 'yes' | 'no'; // 默认 '' 显示全部
 }
 
 // 导入模式

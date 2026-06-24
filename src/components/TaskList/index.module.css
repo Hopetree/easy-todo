@@ -223,6 +223,33 @@
   cursor: pointer;
 }
 
+/* ---- suspended ---- */
+.suspendBtn {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0 2px;
+  border-radius: 3px;
+  color: #94a3b8;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.suspendBtn:hover {
+  color: #f59e0b;
+}
+.suspendBtn.suspended {
+  color: #f59e0b;
+}
+
+.suspendedTag {
+  font-size: 11px;
+  color: #92400e;
+  background: #fef3c7;
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+
 /* ---- archived ---- */
 .archivedTag {
   font-size: 11px;
