@@ -145,7 +145,8 @@
   border: 1px solid #e2e8f0;
   border-radius: 6px;
   padding: 12px 14px;
-  resize: vertical;
+  resize: none;
+  overflow: hidden;
   outline: none;
   background: #f8fafc;
   min-height: 100px;

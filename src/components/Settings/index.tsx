@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import type { AppData, AppSettings, ImportMode } from '@/types';
 import { DEFAULT_SETTINGS } from '@/types';
 import { ImportExport } from '@/components/ImportExport';
@@ -30,6 +30,15 @@ export function Settings({
   const s = settings ?? DEFAULT_SETTINGS;
   const [weeklyText, setWeeklyText] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // 自动撑高 textarea 以适应内容
+  useEffect(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = 'auto';
+    el.style.height = el.scrollHeight + 'px';
+  }, [weeklyText]);
 
   return (
     <div className={styles.container}>
@@ -84,10 +93,15 @@ export function Settings({
               </button>
             </div>
             <textarea
+              ref={textareaRef}
               className={styles.weeklyTextarea}
               value={weeklyText}
               onChange={(e) => setWeeklyText(e.target.value)}
-              rows={weeklyText.split('\n').length || 4}
+              onInput={(e) => {
+                const el = e.currentTarget;
+                el.style.height = 'auto';
+                el.style.height = el.scrollHeight + 'px';
+              }}
             />
           </section>
         )}
