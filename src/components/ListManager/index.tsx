@@ -6,7 +6,7 @@ import styles from './index.module.css';
 interface Props {
   lists: TodoList[];
   activeListId: string;
-  taskCounts: Record<string, { total: number; done: number }>;
+  taskCounts: Record<string, { total: number; done: number; suspended: number }>;
   onSelect: (id: string) => void;
   onAdd: (name: string, color: string) => void;
   onDelete: (id: string) => void;
@@ -70,7 +70,7 @@ export function ListManager({
     <div className={styles.container}>
       <div className={styles.list}>
         {lists.map((list) => {
-          const counts = taskCounts[list.id] ?? { total: 0, done: 0 };
+          const counts = taskCounts[list.id] ?? { total: 0, done: 0, suspended: 0 };
           const isActive = list.id === activeListId;
 
           return (
@@ -104,7 +104,7 @@ export function ListManager({
                 <span className={styles.name}>{list.name}</span>
               )}
               <span className={styles.count}>
-                {counts.done}/{counts.total}
+                {counts.done}/{counts.suspended}/{counts.total}
               </span>
               {isActive && lists.length > 1 && (
                 <div className={styles.actions}>

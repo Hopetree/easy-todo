@@ -82,12 +82,13 @@ export function App() {
   );
 }
 
-function getTaskCounts(tasks: { listId: string; completed: boolean }[]): Record<string, { total: number; done: number }> {
-  const counts: Record<string, { total: number; done: number }> = {};
+function getTaskCounts(tasks: { listId: string; completed: boolean; suspended: boolean }[]): Record<string, { total: number; done: number; suspended: number }> {
+  const counts: Record<string, { total: number; done: number; suspended: number }> = {};
   tasks.forEach((t) => {
-    if (!counts[t.listId]) counts[t.listId] = { total: 0, done: 0 };
+    if (!counts[t.listId]) counts[t.listId] = { total: 0, done: 0, suspended: 0 };
     counts[t.listId].total += 1;
     if (t.completed) counts[t.listId].done += 1;
+    if (t.suspended) counts[t.listId].suspended += 1;
   });
   return counts;
 }

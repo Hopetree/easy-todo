@@ -121,7 +121,7 @@ export function addTask(data: AppData, listId: string, title: string, priority?:
     progress: 0,
     archived: false,
     suspended: false,
-    sortOrder: data.tasks.length,
+    sortOrder: data.tasks.length > 0 ? Math.min(...data.tasks.map((t) => t.sortOrder)) - 1 : 0,
     createdAt: now,
     updatedAt: now,
   };

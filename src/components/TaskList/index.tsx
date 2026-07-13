@@ -25,9 +25,10 @@ export function TaskList({ tasks, lists, defaultExpanded, confirmDelete, onToggl
 
   const getListInfo = (listId: string) => lists.find((l) => l.id === listId);
 
-  // 排序：sortOrder 升序 → 优先级高到低 → 更新时间倒序（同组内未完成在前）
+  // 排序：未完成在前 → 未挂起在前 → sortOrder 升序 → 优先级高到低 → 更新时间倒序
   const sorted = [...tasks].sort((a, b) => {
     if (a.completed !== b.completed) return a.completed ? 1 : -1;
+    if (a.suspended !== b.suspended) return a.suspended ? 1 : -1;
     if (a.sortOrder !== b.sortOrder) return a.sortOrder - b.sortOrder;
     const pa = PRIORITY_ORDER[a.priority] ?? 0;
     const pb = PRIORITY_ORDER[b.priority] ?? 0;
