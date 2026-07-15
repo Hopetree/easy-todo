@@ -36,12 +36,13 @@ export function loadData(): AppData {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return getDefaultData();
-    const data: AppData = JSON.parse(raw);
+    let data: AppData = JSON.parse(raw);
     // 简单版本兼容
     if (!data.version) {
-      return migrateFrom0(data);
+      data = migrateFrom0(data);
     }
-    return data;
+    // 兜底规范化，防御旧版本/损坏数据导致闪退
+    return sanitizeLoadedData(data);
   } catch {
     return getDefaultData();
   }
@@ -62,6 +63,47 @@ function migrateFrom0(data: Partial<AppData>): AppData {
     })),
     settings: { ...DEFAULT_SETTINGS, ...data.settings },
     version: CURRENT_VERSION,
+  };
+}
+
+// ============================================================
+// 数据规范化（防御旧版本/损坏数据导致闪退）
+// ============================================================
+export function sanitizeTask(t: Partial<TodoTask> & { id: string; listId: string }): TodoTask {
+  const now = new Date().toISOString();
+  return {
+    id: t.id ?? '',
+    listId: t.listId ?? '',
+    title: typeof t.title === 'string' ? t.title : '',
+    completed: typeof t.completed === 'boolean' ? t.completed : false,
+    priority: ['high', 'medium', 'low'].includes(t.priority as string) ? t.priority as TodoTask['priority'] : 'medium',
+    dueDate: typeof t.dueDate === 'string' ? t.dueDate : null,
+    tags: Array.isArray(t.tags) ? t.tags.filter((tag) => typeof tag === 'string') : [],
+    note: typeof t.note === 'string' ? t.note : '',
+    progress: typeof t.progress === 'number' ? Math.max(0, Math.min(100, Math.round(t.progress))) : 0,
+    archived: typeof t.archived === 'boolean' ? t.archived : false,
+    suspended: typeof t.suspended === 'boolean' ? t.suspended : false,
+    sortOrder: typeof t.sortOrder === 'number' ? t.sortOrder : 0,
+    createdAt: typeof t.createdAt === 'string' ? t.createdAt : now,
+    updatedAt: typeof t.updatedAt === 'string' ? t.updatedAt : now,
+  };
+}
+
+function sanitizeLoadedData(data: AppData): AppData {
+  return {
+    ...data,
+    version: CURRENT_VERSION,
+    settings: { ...DEFAULT_SETTINGS, ...(data.settings ?? {}) },
+    lists: (data.lists ?? []).map((l) => ({
+      id: l.id ?? '',
+      name: l.name ?? '',
+      color: l.color ?? '#3b82f6',
+      createdAt: l.createdAt ?? new Date().toISOString(),
+      sortOrder: typeof l.sortOrder === 'number' ? l.sortOrder : 0,
+    })),
+    tasks: (data.tasks ?? [])
+      .filter((t) => t && typeof t.id === 'string' && typeof t.listId === 'string')
+      .map((t) => sanitizeTask(t)),
   };
 }
 

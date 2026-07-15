@@ -1,4 +1,5 @@
-import type { AppData, ImportMode, TodoTask } from '@/types';
+import type { AppData, ImportMode } from '@/types';
+import { sanitizeTask } from '@/services/storage';
 
 const FILE_PREFIX = 'easy-todo-backup';
 
@@ -117,27 +118,6 @@ export function readImportFile(file: File): Promise<AppData> {
   });
 }
 
-// 规范化单个任务，补全缺失字段并修正异常值
-export function sanitizeTask(t: Partial<TodoTask> & { id: string; listId: string }): TodoTask {
-  const now = new Date().toISOString();
-  return {
-    id: t.id ?? '',
-    listId: t.listId ?? '',
-    title: typeof t.title === 'string' ? t.title : '',
-    completed: typeof t.completed === 'boolean' ? t.completed : false,
-    priority: ['high', 'medium', 'low'].includes(t.priority as string) ? t.priority as TodoTask['priority'] : 'medium',
-    dueDate: typeof t.dueDate === 'string' ? t.dueDate : null,
-    tags: Array.isArray(t.tags) ? t.tags.filter((tag) => typeof tag === 'string') : [],
-    note: typeof t.note === 'string' ? t.note : '',
-    progress: typeof t.progress === 'number' ? Math.max(0, Math.min(100, Math.round(t.progress))) : 0,
-    archived: typeof t.archived === 'boolean' ? t.archived : false,
-    suspended: typeof t.suspended === 'boolean' ? t.suspended : false,
-    sortOrder: typeof t.sortOrder === 'number' ? t.sortOrder : 0,
-    createdAt: typeof t.createdAt === 'string' ? t.createdAt : now,
-    updatedAt: typeof t.updatedAt === 'string' ? t.updatedAt : now,
-  };
-}
-
 // 规范化导入数据中所有任务
 function sanitizeImportedData(data: AppData): AppData {
   return {
@@ -188,4 +168,38 @@ function validateAppData(data: unknown): data is AppData {
   if (!Array.isArray(d.tasks)) return false;
   if (typeof d.version !== 'number') return false;
   return true;
+}
+
+// 带详细错误信息的校验，用于文本导入时定位问题
+export function validateAppDataDetailed(data: unknown): { valid: true; data: AppData } | { valid: false; error: string } {
+  if (!data) return { valid: false, error: '内容为空' };
+  if (typeof data !== 'object') return { valid: false, error: 'JSON 根节点必须是对象' };
+  const d = data as Record<string, unknown>;
+  if (!Array.isArray(d.lists)) return { valid: false, error: '缺少 lists 数组字段' };
+  if (!Array.isArray(d.tasks)) return { valid: false, error: '缺少 tasks 数组字段' };
+  if (typeof d.version !== 'number') return { valid: false, error: 'version 字段缺失或不是数字' };
+  // 检查 tasks 里是否有脏数据
+  const badTasks = d.tasks.filter((t: any) => !t || typeof t.id !== 'string');
+  if (badTasks.length > 0) {
+    return { valid: false, error: `tasks 中有 ${badTasks.length} 条缺少 id，请检查数据完整性` };
+  }
+  return { valid: true, data: data as AppData };
+}
+
+// 尝试解析 JSON 文本，返回详细错误
+export function parseImportJSON(text: string): { valid: true; data: AppData } | { valid: false; error: string } {
+  if (!text.trim()) return { valid: false, error: '输入内容为空' };
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(text);
+  } catch (e: any) {
+    const match = e.message?.match(/position\s*(\d+)/);
+    if (match) {
+      const pos = parseInt(match[1]);
+      const ctx = text.slice(Math.max(0, pos - 40), pos + 40);
+      return { valid: false, error: `JSON 解析失败 (位置 ${pos}): ${ctx}` };
+    }
+    return { valid: false, error: `JSON 解析失败: ${e.message}` };
+  }
+  return validateAppDataDetailed(parsed);
 }

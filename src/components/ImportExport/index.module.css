@@ -21,7 +21,12 @@
 }
 
 .fullContainer {
-  flex-direction: row;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.buttonsRow {
+  display: flex;
   gap: 8px;
 }
 
@@ -61,6 +66,13 @@
   border: 1px solid #fecaca;
   z-index: 10;
   white-space: nowrap;
+}
+
+.errorFull {
+  position: static;
+  margin-top: 8px;
+  white-space: normal;
+  word-break: break-word;
 }
 
 .modalOverlay {
@@ -124,4 +136,65 @@
 }
 .cancelBtn:hover {
   background: #f1f5f9;
+}
+
+/* ---- text import ---- */
+.textImportSection {
+  width: 100%;
+}
+
+.textImportToggle {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 12px;
+  color: #94a3b8;
+  padding: 0;
+  transition: color 0.15s;
+}
+.textImportToggle:hover {
+  color: #64748b;
+}
+
+.textImportBody {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.textImportArea {
+  width: 100%;
+  min-height: 120px;
+  font-family: "SF Mono", "Menlo", "Monaco", monospace;
+  font-size: 11px;
+  line-height: 1.5;
+  padding: 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  outline: none;
+  resize: vertical;
+  color: #334155;
+  background: #fff;
+}
+.textImportArea:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.textImportBtn {
+  align-self: flex-start;
+  padding: 6px 16px;
+  border: 1px solid #3b82f6;
+  background: #eff6ff;
+  color: #3b82f6;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.15s;
+}
+.textImportBtn:hover {
+  background: #3b82f6;
+  color: #fff;
 }

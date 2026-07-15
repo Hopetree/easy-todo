@@ -118,17 +118,17 @@ export function useAppState() {
 
   const handleImport = useCallback(
     (incoming: AppData, mode: ImportMode) => {
-      setData((prev) => {
-        const newData = applyImport(prev, incoming, mode);
-        saveDataImmediate(newData);
-        return newData;
-      });
+      // 在 setState 之前同步执行，若数据异常可向上抛出错误供 UI 捕获
+      const currentData = loadData();
+      const newData = applyImport(currentData, incoming, mode);
+      saveDataImmediate(newData);
+
+      setData(newData);
       // 修正 activeListId（如果当前列表在覆盖模式中已被删除）
       setActiveListId((prev) => {
-        const currentData = loadData();
-        return currentData.lists.find((l) => l.id === prev)
+        return newData.lists.find((l) => l.id === prev)
           ? prev
-          : (currentData.lists[0]?.id ?? '');
+          : (newData.lists[0]?.id ?? '');
       });
     },
     [],

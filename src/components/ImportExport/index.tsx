@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import type { AppData, ImportMode } from '@/types';
-import { readImportFile } from '@/services/importExport';
+import { readImportFile, parseImportJSON } from '@/services/importExport';
 import styles from './index.module.css';
 
 interface Props {
@@ -16,6 +16,8 @@ export function ImportExport({ data, onExport, onImport, onExportCSV, variant = 
   const [importError, setImportError] = useState<string | null>(null);
   const [importData, setImportData] = useState<AppData | null>(null);
   const [showMode, setShowMode] = useState(false);
+  const [textInput, setTextInput] = useState('');
+  const [showTextImport, setShowTextImport] = useState(false);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setImportError(null);
@@ -34,38 +36,57 @@ export function ImportExport({ data, onExport, onImport, onExportCSV, variant = 
     if (fileRef.current) fileRef.current.value = '';
   };
 
+  const handleTextImport = () => {
+    setImportError(null);
+    const result = parseImportJSON(textInput);
+    if (!result.valid) {
+      setImportError(result.error);
+      return;
+    }
+    setImportData(result.data);
+    setShowMode(true);
+  };
+
   const doImport = (mode: ImportMode) => {
     if (!importData) return;
-    onImport(importData, mode);
-    setImportData(null);
-    setShowMode(false);
+    try {
+      onImport(importData, mode);
+      setImportData(null);
+      setShowMode(false);
+    } catch (e: any) {
+      setImportError(e?.message || '导入失败，请检查文件格式是否正确');
+      setImportData(null);
+      setShowMode(false);
+    }
   };
 
   const isFull = variant === 'full';
 
   return (
     <div className={`${styles.container} ${isFull ? styles.fullContainer : ''}`}>
-      <button
-        className={isFull ? styles.fullBtn : styles.btn}
-        onClick={onExport}
-        title="导出数据"
-      >
-        📤 导出 JSON
-      </button>
-
-      <button
-        className={isFull ? styles.fullBtn : styles.btn}
-        onClick={() => fileRef.current?.click()}
-        title="导入数据"
-      >
-        📥 导入 JSON
-      </button>
-
-      {isFull && onExportCSV && (
-        <button className={styles.fullBtn} onClick={onExportCSV}>
-          📊 导出 CSV
+      <div className={isFull ? styles.buttonsRow : undefined}>
+        <button
+          className={isFull ? styles.fullBtn : styles.btn}
+          onClick={onExport}
+          title="导出数据"
+        >
+          📤 导出 JSON
         </button>
-      )}
+
+        <button
+          className={isFull ? styles.fullBtn : styles.btn}
+          onClick={() => fileRef.current?.click()}
+          title="导入数据"
+        >
+          📥 导入 JSON
+        </button>
+
+        {isFull && onExportCSV && (
+          <button className={styles.fullBtn} onClick={onExportCSV}>
+            📊 导出 CSV
+          </button>
+        )}
+      </div>
       <input
         ref={fileRef}
         type="file"
@@ -74,7 +95,39 @@ export function ImportExport({ data, onExport, onImport, onExportCSV, variant = 
         onChange={handleFileChange}
       />
 
-      {importError && <div className={styles.error}>{importError}</div>}
+      {isFull && (
+        <div className={styles.textImportSection}>
+          <button
+            className={styles.textImportToggle}
+            onClick={() => setShowTextImport(!showTextImport)}
+          >
+            {showTextImport ? '收起' : '📝 手动粘贴导入'}
+          </button>
+          {showTextImport && (
+            <div className={styles.textImportBody}>
+              <textarea
+                className={styles.textImportArea}
+                placeholder="在此粘贴 JSON 内容..."
+                value={textInput}
+                onChange={(e) => {
+                  setTextInput(e.target.value);
+                  setImportError(null);
+                }}
+                rows={8}
+              />
+              <button className={styles.textImportBtn} onClick={handleTextImport}>
+                解析 JSON
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {importError && (
+        <div className={`${styles.error} ${isFull ? styles.errorFull : ''}`}>
+          {importError}
+        </div>
+      )}
 
       {showMode && importData && (
         <div className={styles.modalOverlay} onClick={() => setShowMode(false)}>
