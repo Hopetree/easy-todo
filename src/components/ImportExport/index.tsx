@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import type { AppData, ImportMode } from '@/types';
 import { readImportFile, parseImportJSON } from '@/services/importExport';
+import { IconUpload, IconDownload, IconBarChart, IconEdit } from '@/components/Icon';
 import styles from './index.module.css';
 
 interface Props {
@@ -70,7 +71,7 @@ export function ImportExport({ data, onExport, onImport, onExportCSV, variant = 
           onClick={onExport}
           title="导出数据"
         >
-          📤 导出 JSON
+          <IconUpload size={16} /> 导出 JSON
         </button>
 
         <button
@@ -78,12 +79,12 @@ export function ImportExport({ data, onExport, onImport, onExportCSV, variant = 
           onClick={() => fileRef.current?.click()}
           title="导入数据"
         >
-          📥 导入 JSON
+          <IconDownload size={16} /> 导入 JSON
         </button>
 
         {isFull && onExportCSV && (
           <button className={styles.fullBtn} onClick={onExportCSV}>
-            📊 导出 CSV
+            <IconBarChart size={16} /> 导出 CSV
           </button>
         )}
       </div>
@@ -101,7 +102,7 @@ export function ImportExport({ data, onExport, onImport, onExportCSV, variant = 
             className={styles.textImportToggle}
             onClick={() => setShowTextImport(!showTextImport)}
           >
-            {showTextImport ? '收起' : '📝 手动粘贴导入'}
+            {showTextImport ? '收起' : <><IconEdit size={14} /> 手动粘贴导入</>}
           </button>
           {showTextImport && (
             <div className={styles.textImportBody}>

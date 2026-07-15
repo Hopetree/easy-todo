@@ -6,6 +6,7 @@ import { TaskList } from './TaskList';
 import { TaskEditor } from './TaskEditor';
 import { SearchFilter } from './SearchFilter';
 import { Settings } from './Settings';
+import { IconSettings } from './Icon';
 import styles from './App.module.css';
 
 export function App() {
@@ -38,7 +39,7 @@ export function App() {
           onClick={() => setView('settings')}
           title="设置"
         >
-          ⚙
+          <IconSettings size={18} />
         </button>
       </header>
 

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { TodoTask } from '@/types';
 import { CustomSelect } from '@/components/CustomSelect';
+import { IconCheck, IconPause, IconPlay, IconPencil, IconX, IconGrip } from '@/components/Icon';
 import styles from './index.module.css';
 
 interface Props {
@@ -93,9 +94,9 @@ export function TaskItem({ task, lists, listColor, defaultExpanded = false, conf
           <CustomSelect
             value={editPriority}
             options={[
-              { value: 'high', label: '🔴 高' },
-              { value: 'medium', label: '🟡 中' },
-              { value: 'low', label: '🟢 低' },
+              { value: 'high', label: '高' },
+              { value: 'medium', label: '中' },
+              { value: 'low', label: '低' },
             ]}
             onChange={(v) => setEditPriority(v as TodoTask['priority'])}
           />
@@ -182,14 +183,14 @@ export function TaskItem({ task, lists, listColor, defaultExpanded = false, conf
           onDragStart={() => onDragStart?.()}
           onDragEnd={() => onDragEnd?.()}
         >
-          ⠿
+          <IconGrip size={16} />
         </span>
         <button
           className={`${styles.checkbox} ${task.completed ? styles.checked : ''}`}
           onClick={() => onToggle(task.id)}
           title={task.completed ? '标记未完成' : '标记完成'}
         >
-          {task.completed ? '✓' : ''}
+          {task.completed ? <IconCheck size={14} /> : ''}
         </button>
 
         <div
@@ -228,7 +229,7 @@ export function TaskItem({ task, lists, listColor, defaultExpanded = false, conf
             onUpdate(task.id, { suspended: !task.suspended });
           }}
         >
-          {task.suspended ? '▶' : '⏸'}
+          {task.suspended ? <IconPlay size={14} /> : <IconPause size={14} />}
         </button>
         <button
           className={styles.editBtn}
@@ -246,7 +247,7 @@ export function TaskItem({ task, lists, listColor, defaultExpanded = false, conf
             setEditing(true);
           }}
         >
-          ✎
+          <IconPencil size={15} />
         </button>
         <button
           className={styles.deleteBtn}
@@ -256,7 +257,7 @@ export function TaskItem({ task, lists, listColor, defaultExpanded = false, conf
             onDelete(task.id);
           }}
         >
-          ×
+          <IconX size={15} />
         </button>
       </div>
 

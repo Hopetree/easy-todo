@@ -3,6 +3,7 @@ import type { AppData, AppSettings, ImportMode } from '@/types';
 import { DEFAULT_SETTINGS } from '@/types';
 import { ImportExport } from '@/components/ImportExport';
 import { CustomSelect } from '@/components/CustomSelect';
+import { IconArrowLeft, IconClipboard, IconCheck } from '@/components/Icon';
 import { version } from '@/../package.json';
 import styles from './index.module.css';
 
@@ -44,7 +45,7 @@ export function Settings({
     <div className={styles.container}>
       <header className={styles.header}>
         <button className={styles.backBtn} onClick={onBack}>
-          ← 返回
+          <IconArrowLeft size={16} /> 返回
         </button>
         <h2 className={styles.title}>设置</h2>
         <div className={styles.spacer} />
@@ -67,7 +68,7 @@ export function Settings({
               className={styles.weeklyBtn}
               onClick={() => setWeeklyText(onGenerateWeekly())}
             >
-              📋 生成周报
+              <IconClipboard size={14} /> 生成周报
             </button>
           </div>
         </section>
@@ -89,7 +90,7 @@ export function Settings({
                   }
                 }}
               >
-                {copied ? '✓ 已复制' : '复制'}
+                {copied ? <><IconCheck size={14} /> 已复制</> : '复制'}
               </button>
             </div>
             <textarea

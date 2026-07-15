@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { TodoList } from '@/types';
 import { LIST_COLORS } from '@/types';
+import { IconPencil, IconCheck, IconX } from '@/components/Icon';
 import styles from './index.module.css';
 
 interface Props {
@@ -116,7 +117,7 @@ export function ListManager({
                       startRename(list);
                     }}
                   >
-                    ✎
+                    <IconPencil size={14} />
                   </button>
                   <button
                     className={styles.actionBtn}
@@ -128,7 +129,7 @@ export function ListManager({
                       }
                     }}
                   >
-                    ×
+                    <IconX size={14} />
                   </button>
                 </div>
               )}
@@ -155,7 +156,7 @@ export function ListManager({
           />
           <div className={styles.addActions}>
             <button className={styles.confirmBtn} onClick={handleAdd}>
-              ✓
+              <IconCheck size={16} />
             </button>
             <button
               className={styles.cancelBtn}
@@ -164,7 +165,7 @@ export function ListManager({
                 setNewName('');
               }}
             >
-              ×
+              <IconX size={16} />
             </button>
           </div>
         </div>
