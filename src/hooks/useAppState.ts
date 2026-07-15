@@ -120,15 +120,18 @@ export function useAppState() {
     (incoming: AppData, mode: ImportMode) => {
       setData((prev) => {
         const newData = applyImport(prev, incoming, mode);
-        // 修正 activeListId（如果列表已被删除）
-        if (!newData.lists.find((l) => l.id === activeListId)) {
-          setActiveListId(newData.lists[0]?.id ?? '');
-        }
         saveDataImmediate(newData);
         return newData;
       });
+      // 修正 activeListId（如果当前列表在覆盖模式中已被删除）
+      setActiveListId((prev) => {
+        const currentData = loadData();
+        return currentData.lists.find((l) => l.id === prev)
+          ? prev
+          : (currentData.lists[0]?.id ?? '');
+      });
     },
-    [activeListId],
+    [],
   );
 
   // ==========================================================

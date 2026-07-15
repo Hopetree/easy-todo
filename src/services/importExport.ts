@@ -1,4 +1,4 @@
-import type { AppData, ImportMode } from '@/types';
+import type { AppData, ImportMode, TodoTask } from '@/types';
 
 const FILE_PREFIX = 'easy-todo-backup';
 
@@ -117,20 +117,59 @@ export function readImportFile(file: File): Promise<AppData> {
   });
 }
 
+// 规范化单个任务，补全缺失字段并修正异常值
+export function sanitizeTask(t: Partial<TodoTask> & { id: string; listId: string }): TodoTask {
+  const now = new Date().toISOString();
+  return {
+    id: t.id ?? '',
+    listId: t.listId ?? '',
+    title: typeof t.title === 'string' ? t.title : '',
+    completed: typeof t.completed === 'boolean' ? t.completed : false,
+    priority: ['high', 'medium', 'low'].includes(t.priority as string) ? t.priority as TodoTask['priority'] : 'medium',
+    dueDate: typeof t.dueDate === 'string' ? t.dueDate : null,
+    tags: Array.isArray(t.tags) ? t.tags.filter((tag) => typeof tag === 'string') : [],
+    note: typeof t.note === 'string' ? t.note : '',
+    progress: typeof t.progress === 'number' ? Math.max(0, Math.min(100, Math.round(t.progress))) : 0,
+    archived: typeof t.archived === 'boolean' ? t.archived : false,
+    suspended: typeof t.suspended === 'boolean' ? t.suspended : false,
+    sortOrder: typeof t.sortOrder === 'number' ? t.sortOrder : 0,
+    createdAt: typeof t.createdAt === 'string' ? t.createdAt : now,
+    updatedAt: typeof t.updatedAt === 'string' ? t.updatedAt : now,
+  };
+}
+
+// 规范化导入数据中所有任务
+function sanitizeImportedData(data: AppData): AppData {
+  return {
+    ...data,
+    lists: (data.lists ?? []).map((l) => ({
+      id: l.id ?? '',
+      name: l.name ?? '',
+      color: l.color ?? '#3b82f6',
+      createdAt: l.createdAt ?? new Date().toISOString(),
+      sortOrder: typeof l.sortOrder === 'number' ? l.sortOrder : 0,
+    })),
+    tasks: (data.tasks ?? [])
+      .filter((t) => t && typeof t.id === 'string' && typeof t.listId === 'string')
+      .map((t) => sanitizeTask(t)),
+  };
+}
+
 export function applyImport(
   current: AppData,
   incoming: AppData,
   mode: ImportMode,
 ): AppData {
+  const sanitized = sanitizeImportedData(incoming);
   if (mode === 'overwrite') {
-    return { ...incoming, version: current.version };
+    return { ...sanitized, version: current.version };
   }
   // merge 模式: 追加不冲突的列表和任务
   const existingListIds = new Set(current.lists.map((l) => l.id));
   const existingTaskIds = new Set(current.tasks.map((t) => t.id));
 
-  const newLists = incoming.lists.filter((l) => !existingListIds.has(l.id));
-  const newTasks = incoming.tasks.filter((t) => !existingTaskIds.has(t.id));
+  const newLists = sanitized.lists.filter((l) => !existingListIds.has(l.id));
+  const newTasks = sanitized.tasks.filter((t) => !existingTaskIds.has(t.id));
 
   return {
     ...current,
