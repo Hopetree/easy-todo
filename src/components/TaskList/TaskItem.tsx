@@ -251,9 +251,9 @@ export function TaskItem({ task, lists, listColor, defaultExpanded = false, conf
         </button>
         <button
           className={styles.deleteBtn}
-          title="删除"
+          title="归档"
           onClick={() => {
-            if (confirmDelete && !confirm('确定删除此任务？')) return;
+            if (confirmDelete && !confirm('确定归档此任务？归档后可在归档页面查看和还原')) return;
             onDelete(task.id);
           }}
         >

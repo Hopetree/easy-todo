@@ -1,0 +1,356 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e2e8f0;
+  flex-shrink: 0;
+}
+
+.backBtn {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 13px;
+  color: #64748b;
+  padding: 4px 8px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s;
+}
+.backBtn:hover {
+  background: #f1f5f9;
+  color: #334155;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 600;
+  flex: 1;
+}
+
+.count {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+/* ---- 搜索和批量操作 ---- */
+.toolbar {
+  flex-shrink: 0;
+  padding: 8px 16px;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+.searchRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.searchInput {
+  flex: 1;
+  height: 30px;
+  font-size: 12px;
+  padding: 0 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  outline: none;
+  background: #fff;
+  color: #334155;
+  font-family: inherit;
+}
+.searchInput:focus {
+  border-color: #3b82f6;
+}
+
+.listSelect {
+  min-width: 110px;
+  height: 30px;
+}
+
+.exportBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #64748b;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+.exportBtn:hover {
+  border-color: #3b82f6;
+  color: #3b82f6;
+  background: #eff6ff;
+}
+
+.clearFilterBtn {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 12px;
+  color: #64748b;
+  white-space: nowrap;
+  padding: 0 4px;
+}
+.clearFilterBtn:hover {
+  color: #334155;
+}
+
+.batchRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.selectAllLabel {
+  font-size: 12px;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.batchActions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.batchRestoreBtn,
+.batchDeleteBtn,
+.cancelSelectBtn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 3px 8px;
+  transition: all 0.15s;
+}
+.batchRestoreBtn:hover {
+  background: #f0fdf4;
+  border-color: #16a34a;
+  color: #16a34a;
+}
+.batchDeleteBtn:hover {
+  background: #fef2f2;
+  border-color: #ef4444;
+  color: #ef4444;
+}
+.cancelSelectBtn:hover {
+  background: #f1f5f9;
+}
+
+.batchConfirm {
+  font-size: 12px;
+  color: #ef4444;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.empty {
+  text-align: center;
+  color: #94a3b8;
+  padding: 32px 0;
+  font-size: 14px;
+}
+
+.item {
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  transition: border-color 0.15s;
+}
+.item.selected {
+  border-color: #3b82f6;
+  background: #f8faff;
+}
+
+.checkLabel {
+  padding: 10px 0 10px 12px;
+  flex-shrink: 0;
+}
+.checkLabel input {
+  cursor: pointer;
+}
+
+.itemBody {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 12px 10px 0;
+}
+
+.info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.listDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.listName {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.taskTitle {
+  font-size: 14px;
+  font-weight: 500;
+  word-break: break-word;
+  margin-bottom: 4px;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.priority {
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  background: #f1f5f9;
+}
+.p_high {
+  color: #ef4444;
+  background: #fef2f2;
+}
+.p_medium {
+  color: #f59e0b;
+  background: #fffbeb;
+}
+.p_low {
+  color: #22c55e;
+  background: #f0fdf4;
+}
+
+.dueDate {
+  font-size: 11px;
+  color: #64748b;
+  padding: 1px 6px;
+  background: #f8fafc;
+  border-radius: 3px;
+}
+
+.tag {
+  font-size: 11px;
+  color: #6366f1;
+  background: #eef2ff;
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+
+.suspendedTag {
+  font-size: 11px;
+  color: #92400e;
+  background: #fef3c7;
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.restoreBtn,
+.deleteBtn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  transition: all 0.15s;
+}
+
+.restoreBtn {
+  color: #16a34a;
+}
+.restoreBtn:hover {
+  background: #f0fdf4;
+}
+
+.deleteBtn {
+  color: #ef4444;
+}
+.deleteBtn:hover {
+  background: #fef2f2;
+}
+
+.confirmDelete {
+  font-size: 12px;
+  color: #ef4444;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.confirmYes,
+.confirmNo {
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  border-radius: 3px;
+  padding: 1px 6px;
+  font-size: 11px;
+  cursor: pointer;
+}
+.confirmYes {
+  color: #ef4444;
+  border-color: #fecaca;
+}
+.confirmYes:hover {
+  background: #fef2f2;
+}
+.confirmNo {
+  color: #64748b;
+}
+.confirmNo:hover {
+  background: #f1f5f9;
+}

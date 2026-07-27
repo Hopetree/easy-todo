@@ -170,6 +170,16 @@ export function IconList({ size = 16, ...props }: IconProps) {
   );
 }
 
+export function IconArchive({ size = 16, ...props }: IconProps) {
+  return (
+    <SvgIcon size={size} {...props}>
+      <polyline points="21 8 21 21 3 21 3 8" />
+      <rect x="1" y="3" width="22" height="5" />
+      <line x1="10" y1="12" x2="14" y2="12" />
+    </SvgIcon>
+  );
+}
+
 export function IconFileText({ size = 16, ...props }: IconProps) {
   return (
     <SvgIcon size={size} {...props}>

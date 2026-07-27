@@ -52,7 +52,7 @@ export interface AppData {
 }
 
 // 应用视图
-export type AppView = 'main' | 'settings';
+export type AppView = 'main' | 'settings' | 'archive';
 
 // 筛选条件
 export interface FilterOptions {

@@ -6,12 +6,28 @@ import { TaskList } from './TaskList';
 import { TaskEditor } from './TaskEditor';
 import { SearchFilter } from './SearchFilter';
 import { Settings } from './Settings';
-import { IconSettings } from './Icon';
+import { ArchiveView } from './ArchiveView';
+import { IconSettings, IconArchive } from './Icon';
 import styles from './App.module.css';
 
 export function App() {
   const state = useAppState();
   const [view, setView] = useState<AppView>('main');
+
+  if (view === 'archive') {
+    return (
+      <div className={styles.app}>
+        <ArchiveView
+          tasks={state.data.tasks}
+          lists={state.data.lists}
+          confirmDelete={state.data.settings?.confirmBeforeDelete}
+          onRestore={state.handleRestoreTask}
+          onDelete={state.handleDeleteTask}
+          onBack={() => setView('main')}
+        />
+      </div>
+    );
+  }
 
   if (view === 'settings') {
     return (
@@ -34,6 +50,13 @@ export function App() {
     <div className={styles.app}>
       <header className={styles.header}>
         <h1 className={styles.title}>{state.data.settings?.appTitle ?? 'Easy Todo'}</h1>
+        <button
+          className={styles.settingsBtn}
+          onClick={() => setView('archive')}
+          title="归档任务"
+        >
+          <IconArchive size={18} />
+        </button>
         <button
           className={styles.settingsBtn}
           onClick={() => setView('settings')}
@@ -72,7 +95,7 @@ export function App() {
               defaultExpanded={state.data.settings?.taskDefaultExpanded}
               confirmDelete={state.data.settings?.confirmBeforeDelete}
               onToggle={state.handleToggleTask}
-              onDelete={state.handleDeleteTask}
+              onDelete={state.handleArchiveTask}
               onUpdate={state.handleUpdateTask}
               onReorder={(ids) => state.handleReorderTasks(state.activeListId, ids)}
             />
@@ -83,9 +106,10 @@ export function App() {
   );
 }
 
-function getTaskCounts(tasks: { listId: string; completed: boolean; suspended: boolean }[]): Record<string, { total: number; done: number; suspended: number }> {
+function getTaskCounts(tasks: { listId: string; completed: boolean; suspended: boolean; archived: boolean }[]): Record<string, { total: number; done: number; suspended: number }> {
   const counts: Record<string, { total: number; done: number; suspended: number }> = {};
   tasks.forEach((t) => {
+    if (t.archived) return;
     if (!counts[t.listId]) counts[t.listId] = { total: 0, done: 0, suspended: 0 };
     counts[t.listId].total += 1;
     if (t.completed) counts[t.listId].done += 1;

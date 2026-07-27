@@ -182,6 +182,27 @@ export function updateTask(data: AppData, taskId: string, patch: Partial<TodoTas
   };
 }
 
+// 归档任务（软删除）
+export function archiveTask(data: AppData, taskId: string): AppData {
+  return {
+    ...data,
+    tasks: data.tasks.map((t) =>
+      t.id === taskId ? { ...t, archived: true, updatedAt: new Date().toISOString() } : t,
+    ),
+  };
+}
+
+// 还原任务（取消归档）
+export function restoreTask(data: AppData, taskId: string): AppData {
+  return {
+    ...data,
+    tasks: data.tasks.map((t) =>
+      t.id === taskId ? { ...t, archived: false, updatedAt: new Date().toISOString() } : t,
+    ),
+  };
+}
+
+// 永久删除任务
 export function deleteTask(data: AppData, taskId: string): AppData {
   return {
     ...data,
@@ -206,10 +227,13 @@ export function toggleTask(data: AppData, taskId: string): AppData {
 }
 
 export function deleteList(data: AppData, listId: string): AppData {
+  const now = new Date().toISOString();
   return {
     ...data,
     lists: data.lists.filter((l) => l.id !== listId),
-    tasks: data.tasks.filter((t) => t.listId !== listId),
+    tasks: data.tasks.map((t) =>
+      t.listId === listId ? { ...t, archived: true, updatedAt: now } : t,
+    ),
   };
 }
 

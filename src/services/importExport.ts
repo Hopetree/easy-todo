@@ -1,4 +1,4 @@
-import type { AppData, ImportMode } from '@/types';
+import type { AppData, ImportMode, TodoTask } from '@/types';
 import { sanitizeTask } from '@/services/storage';
 
 const FILE_PREFIX = 'easy-todo-backup';
@@ -34,15 +34,14 @@ export function generateWeeklyText(data: AppData): string {
 // ============================================================
 // CSV 导出
 // ============================================================
-export function exportCSV(data: AppData): void {
-  const listMap = new Map(data.lists.map((l) => [l.id, l.name]));
-  const header = ['标题', '列表', '优先级', '完成', '进度', '截止日期', '标签', '备注', '已归档', '已挂起'];
-  const priorityLabel: Record<string, string> = { high: '高', medium: '中', low: '低' };
+const CSV_HEADER = ['标题', '列表', '优先级', '完成', '进度', '截止日期', '标签', '备注', '已归档', '已挂起'];
+const PRIORITY_LABEL: Record<string, string> = { high: '高', medium: '中', low: '低' };
 
-  const rows = data.tasks.map((t) => [
+function buildCSV(tasks: TodoTask[], listMap: Map<string, string>): string {
+  const rows = tasks.map((t) => [
     escapeCSV(t.title),
     escapeCSV(listMap.get(t.listId) ?? ''),
-    priorityLabel[t.priority] ?? t.priority,
+    PRIORITY_LABEL[t.priority] ?? t.priority,
     t.completed ? '是' : '否',
     `${t.progress}%`,
     t.dueDate ?? '',
@@ -51,19 +50,36 @@ export function exportCSV(data: AppData): void {
     t.archived ? '是' : '否',
     t.suspended ? '是' : '否',
   ]);
+  return [CSV_HEADER.join(','), ...rows.map((r) => r.join(','))].join('\n');
+}
 
-  const csv = [header.join(','), ...rows.map((r) => r.join(','))].join('\n');
+function downloadCSV(csv: string, filename: string): void {
   const bom = '﻿';
   const blob = new Blob([bom + csv], { type: 'text/csv;charset=utf-8' });
   const url = URL.createObjectURL(blob);
-  const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
   const a = document.createElement('a');
   a.href = url;
-  a.download = `easy-todo-${dateStr}.csv`;
+  a.download = filename;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
+}
+
+// 导出全部任务
+export function exportCSV(data: AppData): void {
+  const listMap = new Map(data.lists.map((l) => [l.id, l.name]));
+  const csv = buildCSV(data.tasks, listMap);
+  const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  downloadCSV(csv, `easy-todo-${dateStr}.csv`);
+}
+
+// 导出指定任务列表
+export function exportTasksCSV(tasks: TodoTask[], lists: { id: string; name: string }[]): void {
+  const listMap = new Map(lists.map((l) => [l.id, l.name]));
+  const csv = buildCSV(tasks, listMap);
+  const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  downloadCSV(csv, `easy-todo-archive-${dateStr}.csv`);
 }
 
 function escapeCSV(val: string): string {

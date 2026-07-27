@@ -9,6 +9,8 @@ import {
   addTask,
   updateTask,
   deleteTask,
+  archiveTask,
+  restoreTask,
   toggleTask,
   deleteList,
   renameList,
@@ -91,6 +93,17 @@ export function useAppState() {
     setData((prev) => updateTask(prev, taskId, patch));
   }, []);
 
+  // 归档（软删除，从列表中移除但不真正删除）
+  const handleArchiveTask = useCallback((taskId: string) => {
+    setData((prev) => archiveTask(prev, taskId));
+  }, []);
+
+  // 还原（取消归档）
+  const handleRestoreTask = useCallback((taskId: string) => {
+    setData((prev) => restoreTask(prev, taskId));
+  }, []);
+
+  // 永久删除
   const handleDeleteTask = useCallback((taskId: string) => {
     setData((prev) => deleteTask(prev, taskId));
   }, []);
@@ -184,7 +197,10 @@ export function useAppState() {
 
   const allTags = useCallback((): string[] => {
     const tags = new Set<string>();
-    data.tasks.forEach((t) => t.tags.forEach((tag) => tags.add(tag)));
+    data.tasks.forEach((t) => {
+      if (t.archived) return;
+      t.tags.forEach((tag) => tags.add(tag));
+    });
     return Array.from(tags).sort();
   }, [data]);
 
@@ -201,6 +217,8 @@ export function useAppState() {
     handleReorderTasks,
     handleAddTask,
     handleUpdateTask,
+    handleArchiveTask,
+    handleRestoreTask,
     handleDeleteTask,
     handleToggleTask,
     handleExport,
