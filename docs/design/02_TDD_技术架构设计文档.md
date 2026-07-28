@@ -28,15 +28,18 @@
 ├─────────────────────────────────────────────┤
 │  Popup (插件弹窗)                             │
 │  ┌─────────────────────────────────────┐     │
-│  │  React App                           │     │
-│  │  ┌─────────┐ ┌──────────┐ ┌───────┐ │     │
-│  │  │列表管理  │ │任务列表   │ │搜索筛 │ │     │
-│  │  │Sidebar  │ │TaskList  │ │选面板 │ │     │
-│  │  │(拖拽)   │ │(拖拽)    │ └───────┘ │     │
-│  │  └─────────┘ └──────────┘           │     │
-│  │  ┌──────────────────────────────┐   │     │
-│  │  │  设置页面 (导入导出+周报)     │   │     │
-│  │  └──────────────────────────────┘   │     │
+│  │  React App (5 视图路由)              │     │
+│  │  ┌──────┐ ┌──────┐ ┌────┐ ┌──────┐ │     │
+│  │  │列表  │ │任务  │ │搜索│ │主视图 │ │     │
+│  │  │管理  │ │列表  │ │筛选│ │(主页)│ │     │
+│  │  └──────┘ └──────┘ └────┘ └──────┘ │     │
+│  │  ┌──────┐ ┌──────┐ ┌──────┐        │     │
+│  │  │归档  │ │周报  │ │数据  │        │     │
+│  │  │页面  │ │页面  │ │页面  │        │     │
+│  │  └──────┘ └──────┘ └──────┘        │     │
+│  │  ┌──────┐                           │     │
+│  │  │设置  │                           │     │
+│  │  └──────┘                           │     │
 │  └─────────────────────────────────────┘     │
 │                      │                        │
 │  ┌───────────────────┴──────────────────┐     │
@@ -52,15 +55,19 @@
 
 | 模块 | 职责 | 关键文件 |
 |------|------|---------|
-| **App Shell** | 应用根组件，路由/布局 | `App.tsx` |
-| **ListManager** | 列表的创建、切换、重命名、删除 | `components/ListManager/` |
-| **TaskList** | 任务列表渲染、CRUD 操作 | `components/TaskList/` |
+| **App Shell** | 应用根组件，5 视图路由/布局 | `App.tsx` |
+| **ListManager** | 列表的创建、切换、重命名、删除，显示完成/挂起/总数 | `components/ListManager/` |
+| **TaskList** | 任务列表渲染、CRUD 操作、拖拽排序 | `components/TaskList/` |
 | **TaskEditor** | 任务创建/编辑表单（含属性面板） | `components/TaskEditor/` |
-| **SearchFilter** | 关键词搜索 + 字段筛选组合 | `components/SearchFilter/` |
-| **ImportExport** | 数据导出 JSON / 导入 JSON | `components/ImportExport/` |
-| **Settings** | 设置页面（配置项+导入导出+周报） | `components/Settings/` |
-| **Storage Service** | localStorage 读写封装 + 拖拽排序 | `services/storage.ts` |
-| **ImportExport Service** | 文件读写、数据校验、合并、周报生成 | `services/importExport.ts` |
+| **SearchFilter** | 关键词搜索 + 多字段组合筛选（含挂起状态） | `components/SearchFilter/` |
+| **ImportExport** | 数据导出 JSON/CSV、导入 JSON（文件+粘贴） | `components/ImportExport/` |
+| **Settings** | 设置页面（仅保留偏好设置） | `components/Settings/` |
+| **ArchiveView** | 归档任务独立页面（搜索、批操作、CSV 导出） | `components/ArchiveView/` |
+| **WeeklyReport** | 周报独立页面（生成、编辑、复制） | `components/WeeklyReport/` |
+| **DataPage** | 数据管理独立页面（导入导出入口） | `components/DataPage/` |
+| **Icon** | SVG 图标组件库（统一 16 个图标） | `components/Icon/` |
+| **Storage Service** | localStorage 读写 + 数据规范化 + 原子操作 | `services/storage.ts` |
+| **ImportExport Service** | 文件读写、数据校验、合并、CSV、周报生成 | `services/importExport.ts` |
 
 ---
 
@@ -79,10 +86,14 @@ interface TodoTask {
   note: string;             // 备注
   progress: number;         // 进度 0-100，默认 0，完成自动 100
   archived: boolean;        // 已归档，默认 false
-  sortOrder: number;        // 手动排序序号，新建自动递增
+  suspended: boolean;       // 已挂起，默认 false
+  sortOrder: number;        // 手动排序序号，新建插入到列表顶部
   createdAt: string;        // 创建时间
   updatedAt: string;        // 更新时间
 }
+
+// 应用视图
+type AppView = 'main' | 'settings' | 'archive' | 'weekly' | 'data';
 
 // 列表
 interface TodoList {
@@ -122,6 +133,11 @@ interface AppData {
   - 应用启动时一次性加载到 React 状态
   - 状态变更时自动同步写入 localStorage（debounce 300ms）
   - 导入时根据用户选择合并或覆盖
+- **数据规范化**（防御旧版本/损坏数据导致闪退）：
+  - `sanitizeLoadedData`：每次 `loadData()` 时对 lists/tasks/settings 全量规范化
+  - `sanitizeTask`：补全缺失字段、修正无效类型、clamp progress 到 0-100
+  - 导入时同样经过 `sanitizeImportedData` 规范化
+  - 静默丢弃缺少 id 或 listId 的无效任务
 
 ---
 
@@ -134,10 +150,16 @@ interface AppData {
 4. 文件名格式：`easy-todo-backup-<YYYYMMDD>.json`
 
 **导入流程**：
-1. 用户选择 JSON 文件（`<input type="file">`）
-2. 读取并解析，校验数据结构合法性
-3. 弹出选项：**合并**（追加不冲突的列表/任务）或 **覆盖**（清空后写入）
-4. 执行后刷新应用状态
+1. 用户选择 JSON 文件（`<input type="file">`）或在文本框中粘贴 JSON
+2. 读取并解析，`parseImportJSON` 提供详细错误信息（语法位置 + 数据完整性）
+3. 数据经过 `sanitizeImportedData` 规范化处理
+4. 弹出选项：**合并**（追加不冲突的列表/任务）或 **覆盖**（清空后写入）
+5. 执行后保存到 localStorage 并刷新应用状态
+
+**CSV 导出**：
+- `exportCSV`：导出全部任务（包含挂起/归档状态列）
+- `exportTasksCSV`：导出指定任务列表（如归档页面中导出筛选结果）
+- 文件带 BOM 确保 Excel 正确识别 UTF-8 编码
 
 ---
 
@@ -179,7 +201,19 @@ easy-todo/
 │   │   │   └── index.tsx
 │   │   ├── SearchFilter/
 │   │   │   └── index.tsx
-│   │   └── ImportExport/
+│   │   ├── ImportExport/
+│   │   │   └── index.tsx
+│   │   ├── Settings/
+│   │   │   └── index.tsx
+│   │   ├── ArchiveView/
+│   │   │   └── index.tsx
+│   │   ├── WeeklyReport/
+│   │   │   └── index.tsx
+│   │   ├── DataPage/
+│   │   │   └── index.tsx
+│   │   ├── CustomSelect/
+│   │   │   └── index.tsx
+│   │   └── Icon/
 │   │       └── index.tsx
 │   ├── services/
 │   │   ├── storage.ts
@@ -203,3 +237,4 @@ easy-todo/
 | 版本 | 日期 | 变更说明 |
 |------|------|---------|
 | v1.1 | 2026-06-09 | 根据 commit 0e591b7 更新：数据模型新增 progress/archived/sortOrder/AppSettings；新增 Settings 组件和 reorderTasks/reorderLists/generateWeeklyText 服务 |
+| v1.2 | 2026-07-28 | 根据 commit 4c46b82 更新：TodoTask 新增 suspended 字段、AppView 扩展为 5 视图；新增 ArchiveView/WeeklyReport/DataPage/Icon 组件；新增 archiveTask/restoreTask/sanitizeTask/sanitizeLoadedData/exportTasksCSV/parseImportJSON 服务；数据规范化机制；导入支持粘贴 JSON |

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { IconHome, IconClipboard, IconCheck } from '@/components/Icon';
 import styles from './index.module.css';
 
@@ -11,13 +11,6 @@ export function WeeklyReport({ onGenerateWeekly, onBack }: Props) {
   const [weeklyText, setWeeklyText] = useState<string>(() => onGenerateWeekly());
   const [copied, setCopied] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  useEffect(() => {
-    const el = textareaRef.current;
-    if (!el) return;
-    el.style.height = 'auto';
-    el.style.height = el.scrollHeight + 'px';
-  }, [weeklyText]);
 
   return (
     <div className={styles.container}>
@@ -57,11 +50,6 @@ export function WeeklyReport({ onGenerateWeekly, onBack }: Props) {
           value={weeklyText}
           onChange={(e) => {
             setWeeklyText(e.target.value);
-            const el = e.currentTarget;
-            el.style.height = 'auto';
-            el.style.height = el.scrollHeight + 'px';
-          }}
-          onInput={(e) => {
             const el = e.currentTarget;
             el.style.height = 'auto';
             el.style.height = el.scrollHeight + 'px';

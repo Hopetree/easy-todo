@@ -1,9 +1,12 @@
 {
-  "last_reviewed_commit": "a7bdbc46abc87ff4c6e0391c2dc02080f0292a59",
-  "last_reviewed_commit_short": "a7bdbc4",
-  "last_review_date": "2026-06-11",
-  "last_review_summary": "CustomSelect 组件、CI/CD、appTitle、列表切换、样式修复，1 个死代码问题已修复",
-  "documents_updated": [],
+  "last_reviewed_commit": "4c46b82a73c48fd3626ad6bf2bab174fa8cb3058",
+  "last_reviewed_commit_short": "4c46b82",
+  "last_review_date": "2026-07-28",
+  "last_review_summary": "页面拆分、归档页面、周报页面、数据管理页面、任务挂起、SVG 图标组件、导入粘贴 JSON、数据规范化防御、排序优化。发现 5 个问题（1 个必须修复、3 个建议改进、1 个可选优化）",
+  "documents_updated": [
+    "docs/design/01_PRD_产品需求规格说明书.md",
+    "docs/design/02_TDD_技术架构设计文档.md"
+  ],
   "documents": [
     {
       "path": "docs/design/01_PRD_产品需求规格说明书.md",

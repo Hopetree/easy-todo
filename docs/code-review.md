@@ -1,5 +1,33 @@
 # Code Review 报告
 
+## 第四次 Review：`a7bdbc4..4c46b82`（2026-07-28）
+
+**变更**：页面拆分、归档任务页面、周报独立页面、数据管理页面、任务挂起功能、SVG 图标组件、导入导出入粘贴、数据规范化防御、排序优化
+
+## 问题总览
+
+| # | 优先级 | 文件 | 行号 | 概述 | 状态 |
+|---|--------|------|------|------|------|
+| 1 | 🔴 必须修复 | package.json / package-lock.json | L3 | 版本号不一致（1.0.17 vs 1.0.9） | ✅ Fixed |
+| 2 | 🟡 建议改进 | src/components/WeeklyReport/index.tsx | L58-68 | `onChange` 和 `onInput` 重复自动撑高，已移除重复逻辑 | ✅ Fixed |
+| 3 | 🟡 建议改进 | src/components/ArchiveView/index.tsx | L32-36 | `allTags` 通过 useMemo 计算但从未使用，死代码已删除 | ✅ Fixed |
+| 4 | 🟡 建议改进 | src/services/storage.ts / importExport.ts | L104-106 | `sanitizeLoadedData` 静默丢弃脏数据，已添加 console.warn | ✅ Fixed |
+| 5 | 🟢 可选优化 | src/services/storage.ts | L166 | `addTask` sortOrder 置顶为预期设计 | ⏭️ Skipped |
+
+---
+
+## 修复记录（2026-07-28）
+
+| # | 状态 | 修复方式 |
+|---|------|----------|
+| 1 | ✅ Fixed | `npm install` 同步 package-lock.json 版本号 |
+| 2 | ✅ Fixed | 移除 `useEffect` 和 `onInput`，`onChange` 中统一处理 DOM 撑高 |
+| 3 | ✅ Fixed | 删除 ArchiveView 中未使用的 `allTags` useMemo |
+| 4 | ✅ Fixed | storage.ts 和 importExport.ts 的 filter 中添加 `console.warn` 记录丢弃数据 |
+| 5 | ⏭️ Skipped | 置顶为 v1.0.12 明确设计决策 |
+
+---
+
 ## 第三次 Review：`8cebde2..a7bdbc4` + 工作区（2026-06-11）
 
 **变更**：CustomSelect 组件、CI/CD、appTitle、列表切换、样式修复
@@ -18,30 +46,4 @@
 
 ## 第一次 Review：`4fe2cf7..0e591b7`（2026-06-09）
 
----
-
-## 问题总览
-
-| # | 优先级 | 文件 | 行号 | 概述 | 状态 |
-|---|--------|------|------|------|------|
-| 1 | 🟡 建议 | src/hooks/useAppState.ts | L93-96 | `handleExport` 中使用 `require()` 动态导入，ESM 模式下不可靠 | ✅ 已修复 |
-| 2 | 🟡 建议 | src/entrypoints/popup/main.tsx | — | 入口文件未修改，但新增的 Settings 组件缺少在 entrypoint 中的引用说明 | ⏭️ 无需修改 |
-| 3 | 🟢 可选 | src/components/TaskList/index.tsx | L31 | `PRIORITY_ORDER` 常量每次渲染重新创建，应提取到组件外 | ✅ 已修复 |
-| 4 | 🟢 可选 | src/components/Settings/index.tsx | L727 | `navigator.clipboard.writeText` 未处理权限拒绝的情况 | ✅ 已修复 |
-
----
-
-## 问题详情
-
-### 2. 🟡 入口文件未反映新增组件
-
-**文件**：`src/entrypoints/popup/main.tsx`
-
-**问题**：本次新增了 Settings 组件并在 App.tsx 中使用，但 `main.tsx` 入口本身没有变化。这不构成实际 bug，但建议确认 WXT 构建输出中 Settings 组件被正确打包。
-
-**建议**：构建已通过（已确认），无需代码修改。此项仅作提醒，可跳过。
-
-**状态**：⏭️ 无需修改
-
----
-
+✅ 4 个问题已全部修复或跳过。

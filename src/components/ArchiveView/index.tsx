@@ -29,12 +29,6 @@ export function ArchiveView({ tasks, lists, confirmDelete = true, onRestore, onD
 
   const listMap = useMemo(() => new Map(lists.map((l) => [l.id, l])), [lists]);
 
-  const allTags = useMemo(() => {
-    const tags = new Set<string>();
-    tasks.filter((t) => t.archived).forEach((t) => t.tags.forEach((tag) => tags.add(tag)));
-    return Array.from(tags).sort();
-  }, [tasks]);
-
   // 过滤后的归档任务
   const filtered = useMemo(() => {
     let result = tasks.filter((t) => t.archived);

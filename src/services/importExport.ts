@@ -146,7 +146,13 @@ function sanitizeImportedData(data: AppData): AppData {
       sortOrder: typeof l.sortOrder === 'number' ? l.sortOrder : 0,
     })),
     tasks: (data.tasks ?? [])
-      .filter((t) => t && typeof t.id === 'string' && typeof t.listId === 'string')
+      .filter((t) => {
+        const valid = t && typeof t.id === 'string' && typeof t.listId === 'string';
+        if (!valid && t) {
+          console.warn('[easy-todo] 导入数据中丢弃无效任务:', t);
+        }
+        return valid;
+      })
       .map((t) => sanitizeTask(t)),
   };
 }
