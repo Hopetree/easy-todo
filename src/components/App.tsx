@@ -7,7 +7,9 @@ import { TaskEditor } from './TaskEditor';
 import { SearchFilter } from './SearchFilter';
 import { Settings } from './Settings';
 import { ArchiveView } from './ArchiveView';
-import { IconSettings, IconArchive } from './Icon';
+import { WeeklyReport } from './WeeklyReport';
+import { DataPage } from './DataPage';
+import { IconSettings, IconArchive, IconClipboard, IconDownload } from './Icon';
 import styles from './App.module.css';
 
 export function App() {
@@ -29,17 +31,37 @@ export function App() {
     );
   }
 
+  if (view === 'weekly') {
+    return (
+      <div className={styles.app}>
+        <WeeklyReport
+          onGenerateWeekly={state.handleGenerateWeekly}
+          onBack={() => setView('main')}
+        />
+      </div>
+    );
+  }
+
+  if (view === 'data') {
+    return (
+      <div className={styles.app}>
+        <DataPage
+          data={state.data}
+          onExport={state.handleExport}
+          onExportCSV={state.handleExportCSV}
+          onImport={state.handleImport}
+          onBack={() => setView('main')}
+        />
+      </div>
+    );
+  }
+
   if (view === 'settings') {
     return (
       <div className={styles.app}>
         <Settings
           settings={state.data.settings}
-          data={state.data}
           onUpdateSettings={state.handleUpdateSettings}
-          onExport={state.handleExport}
-          onGenerateWeekly={state.handleGenerateWeekly}
-          onExportCSV={state.handleExportCSV}
-          onImport={state.handleImport}
           onBack={() => setView('main')}
         />
       </div>
@@ -52,10 +74,24 @@ export function App() {
         <h1 className={styles.title}>{state.data.settings?.appTitle ?? 'Easy Todo'}</h1>
         <button
           className={styles.settingsBtn}
+          onClick={() => setView('weekly')}
+          title="周报"
+        >
+          <IconClipboard size={18} />
+        </button>
+        <button
+          className={styles.settingsBtn}
           onClick={() => setView('archive')}
           title="归档任务"
         >
           <IconArchive size={18} />
+        </button>
+        <button
+          className={styles.settingsBtn}
+          onClick={() => setView('data')}
+          title="数据管理"
+        >
+          <IconDownload size={18} />
         </button>
         <button
           className={styles.settingsBtn}

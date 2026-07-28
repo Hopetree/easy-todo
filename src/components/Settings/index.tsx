@@ -1,51 +1,24 @@
-import { useState, useRef, useEffect } from 'react';
-import type { AppData, AppSettings, ImportMode } from '@/types';
+import type { AppSettings } from '@/types';
 import { DEFAULT_SETTINGS } from '@/types';
-import { ImportExport } from '@/components/ImportExport';
 import { CustomSelect } from '@/components/CustomSelect';
-import { IconArrowLeft, IconClipboard, IconCheck } from '@/components/Icon';
+import { IconHome } from '@/components/Icon';
 import { version } from '@/../package.json';
 import styles from './index.module.css';
 
 interface Props {
   settings: AppSettings;
-  data: AppData;
   onUpdateSettings: (patch: Partial<AppSettings>) => void;
-  onExport: () => void;
-  onGenerateWeekly: () => string;
-  onExportCSV: () => void;
-  onImport: (data: AppData, mode: ImportMode) => void;
   onBack: () => void;
 }
 
-export function Settings({
-  settings,
-  data,
-  onUpdateSettings,
-  onExport,
-  onGenerateWeekly,
-  onExportCSV,
-  onImport,
-  onBack,
-}: Props) {
+export function Settings({ settings, onUpdateSettings, onBack }: Props) {
   const s = settings ?? DEFAULT_SETTINGS;
-  const [weeklyText, setWeeklyText] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  // 自动撑高 textarea 以适应内容
-  useEffect(() => {
-    const el = textareaRef.current;
-    if (!el) return;
-    el.style.height = 'auto';
-    el.style.height = el.scrollHeight + 'px';
-  }, [weeklyText]);
 
   return (
     <div className={styles.container}>
       <header className={styles.header}>
         <button className={styles.backBtn} onClick={onBack}>
-          <IconArrowLeft size={16} /> 返回
+          <IconHome size={16} />
         </button>
         <h2 className={styles.title}>设置</h2>
         <div className={styles.spacer} />
@@ -53,60 +26,6 @@ export function Settings({
       </header>
 
       <div className={styles.body}>
-        {/* 数据管理 */}
-        <section className={styles.section}>
-          <h3 className={styles.sectionTitle}>数据管理</h3>
-          <div className={styles.importExportCard}>
-            <ImportExport
-              data={data}
-              onExport={onExport}
-              onImport={onImport}
-              onExportCSV={onExportCSV}
-              variant="full"
-            />
-            <button
-              className={styles.weeklyBtn}
-              onClick={() => setWeeklyText(onGenerateWeekly())}
-            >
-              <IconClipboard size={14} /> 生成周报
-            </button>
-          </div>
-        </section>
-
-        {/* 周报展示 */}
-        {weeklyText !== null && (
-          <section className={styles.section}>
-            <div className={styles.weeklyHeader}>
-              <h3 className={styles.weeklyTitle}>周报预览</h3>
-              <button
-                className={`${styles.copyBtn} ${copied ? styles.copied : ''}`}
-                onClick={async () => {
-                  try {
-                    await navigator.clipboard.writeText(weeklyText);
-                    setCopied(true);
-                    setTimeout(() => setCopied(false), 1500);
-                  } catch {
-                    // clipboard API 不可用，静默失败
-                  }
-                }}
-              >
-                {copied ? <><IconCheck size={14} /> 已复制</> : '复制'}
-              </button>
-            </div>
-            <textarea
-              ref={textareaRef}
-              className={styles.weeklyTextarea}
-              value={weeklyText}
-              onChange={(e) => setWeeklyText(e.target.value)}
-              onInput={(e) => {
-                const el = e.currentTarget;
-                el.style.height = 'auto';
-                el.style.height = el.scrollHeight + 'px';
-              }}
-            />
-          </section>
-        )}
-
         {/* 常规设置 */}
         <section className={styles.section}>
           <h3 className={styles.sectionTitle}>常规设置</h3>

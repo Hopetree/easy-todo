@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import type { TodoTask, TodoList } from '@/types';
 import { CustomSelect } from '@/components/CustomSelect';
-import { IconArrowLeft, IconTrash, IconCheck, IconBarChart } from '@/components/Icon';
+import { IconHome, IconTrash, IconCheck, IconBarChart } from '@/components/Icon';
 import { exportTasksCSV } from '@/services/importExport';
 import styles from './index.module.css';
 
@@ -120,7 +120,7 @@ export function ArchiveView({ tasks, lists, confirmDelete = true, onRestore, onD
     <div className={styles.container}>
       <header className={styles.header}>
         <button className={styles.backBtn} onClick={onBack}>
-          <IconArrowLeft size={16} /> 返回
+          <IconHome size={16} />
         </button>
         <h2 className={styles.title}>归档任务</h2>
         <span className={styles.count}>{filtered.length} 个</span>
